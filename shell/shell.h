@@ -15,4 +15,10 @@ int test_print(void);
  * Caller responsible for freeing returned line string
  */
 char* read_line();
+
+/**
+ * Prints the given error string to stdout.
+ * The formated used is 'error: %s'
+ */
+void print_error(const char* err);
 #endif /* SHELL_H_ */
