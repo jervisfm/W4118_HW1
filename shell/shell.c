@@ -11,10 +11,14 @@ int test (int argc, char** argv)
 	return 0;
 }
 
+
 int main(int argc, char **argv)
 {
 	return test(argc, argv);
 }
+
+
+
 
 /*
  * Reads line from stdin
@@ -47,11 +51,26 @@ char* read_line()
 		line[i+1] = '\0';
 		++i;
 	}
-	if(c = '\0') {
+	if(c == '\0') {
 		print_error("Reading character from std failed");
 		return NULL;
 	}
 	return line;
+}
+
+
+/**
+ * This parses the given line into separate string.
+ * The delimeter used by default is whitespace.
+ */
+void parse_line(const char* line, char* parsed[])
+{
+
+}
+
+
+void print_prompt() {
+	printf("$ ");
 }
 
 void print_error(const char* err) {

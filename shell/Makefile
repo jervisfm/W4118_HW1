@@ -11,7 +11,7 @@ all: w4118_sh
 w4118_sh: $(OBJECTS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJECTS)
 
-%.o: %.c
+%.o: %.c %.h
 	$(CC) $(CFLAGS) -c $^
 
 clean:
