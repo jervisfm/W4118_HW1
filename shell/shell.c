@@ -27,7 +27,7 @@ char* read_line()
 
 	/*memory allocation failed*/
 	if(line == NULL) {
-		perror("error: readline memory allocation failed");
+		print_error("ReadLine memory allocation failed");
 		return NULL;
 	}
 
@@ -46,6 +46,10 @@ char* read_line()
 		line[i] = c;
 		line[i+1] = '\0';
 		++i;
+	}
+	if(c = '\0') {
+		print_error("Reading character from std failed");
+		return NULL;
 	}
 	return line;
 }
