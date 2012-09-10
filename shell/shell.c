@@ -292,13 +292,8 @@ void init(void) {
 }
 
 void initialize_path_list(void) {
-	PATH.paths = calloc(1, sizeof(struct String));
-	check_allocated_mem("initialize_path_list", PATH.paths);
-	PATH.size = 1;
-	PATH.paths->size = 1;
-	PATH.paths->data = calloc(1, sizeof(char));
-	check_allocated_mem("initialize_path_list", PATH.paths->data);
-	PATH.paths->next = NULL;
+	PATH.size = 0;
+	PATH.paths = NULL;
 }
 
 
@@ -320,9 +315,14 @@ void add_string_to_path_list(const char* string, struct Paths* arr) {
 	new_string->size = string_size + 1;
 
 	/* insert new string into list */
-	new_string->next = arr->paths;
-	arr->paths = new_string;
+	if (size == 0) {
+		new_string->next = NULL;
+		arr->paths = new_string;
 
+	} else {
+		new_string->next = arr->paths;
+		arr->paths = new_string;
+	}
 	arr->size = new_size;
 }
 
@@ -588,10 +588,12 @@ void test_add_string_to_path_list(void) {
 	add_string_to_path_list("two", &PATH);
 	add_string_to_path_list("three", &PATH);
 
-	assert(strcmp(PATH.paths->data, "one"));
-	assert(PATH.paths->size == 4);
-	assert(strcmp(PATH.paths->next->data, "two"));
-	assert(strcmp(PATH.paths->next->next->data, "three"));
+	assert(strcmp(PATH.paths->data, "three") == 0);
+	assert(PATH.paths->size == 6);
+	assert(strcmp(PATH.paths->next->data, "two") == 0);
+	assert(PATH.paths->next->size == 4);
+	assert(strcmp(PATH.paths->next->next->data, "one") == 0);
+	assert(PATH.paths->next->next->size == 4);
 	assert(PATH.size == 3);
 }
 
@@ -603,8 +605,9 @@ void test_remove_string_from_path_list(void) {
 
 	remove_string_from_path_list("two", &PATH);
 
-	assert(strcmp(PATH.paths->data, "one"));
-	assert(PATH.paths->size == 4);
-	assert(strcmp(PATH.paths->next->data, "three"));
+	assert(strcmp(PATH.paths->data, "three") == 0);
+	assert(PATH.paths->size == 6);
+	assert(strcmp(PATH.paths->next->data, "one") == 0);
+	assert(PATH.paths->next->size == 4);
 	assert(PATH.size == 2);
 }
