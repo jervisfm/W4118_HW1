@@ -72,6 +72,8 @@ int exists_file(const char* file_path);
 
 int can_execute_file(const char* file_path);
 
+void check_allocated_mem(const char* function, void * input);
+
 /**
  * Tests
  */
@@ -83,5 +85,6 @@ void test_initialize_string_array(void);
 void test_is_builtin_command(void);
 void test_can_execute_file(void);
 void test_exists_file(void);
+void test_join_path(void);
 
 #endif /* SHELL_H_ */

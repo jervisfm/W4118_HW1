@@ -241,6 +241,7 @@ int exists_file(const char* file_path) {
 
 /**
  * Determines if the given file can be ran
+ * return 1 on success and 0 on failure
  */
 int can_execute_file(const char* file_path) {
 	/* access returns 0 on success */
@@ -251,9 +252,75 @@ int can_execute_file(const char* file_path) {
 	}
 }
 
+/*
+ * Returns the index of the first path for which the given
+ * cmd is found.
+ * Otherwise returns -1 to indicate cmd was not found in any path
+ */
+int get_first_path_index(const char* cmd, const char* paths[], int array_size) {
+	int i = 0;
+	for(; i < array_size; ++i) {
+
+	}
+	return -1;
+}
+
+/**
+ * Joins together the given directory with the specified path.
+ * Caller is responsible for freeing return string.
+ */
+char* join_path(const char* dir, const char* path) {
+	int i = 0;
+	char curr;
+	char next;
+	/* we add 3 to account for null characters in dir & path
+	 * and also to account for possibility of having a "/" in the dir
+	 * string
+	 */
+	int combined_size = strlen(dir) + strlen(path) + 3;
+	char * joined = calloc(combined_size, sizeof(char));
+	check_allocated_mem("join_path", joined);
+
+	for(; dir[i] != '\0'; ++i) {
+		curr = dir[i];
+		next = dir[i+1];
+		if(next == '\0') { /*we currently at the last character*/
+			if (curr != '/') {
+				strcat(joined, dir);
+				strcat(joined, "/");
+				strcat(joined, path);
+			} else {
+				strcat(joined, dir);
+				strcat(joined, path);
+			}
+		}
+	}
+	return joined;
+}
+
+
+/*
+ * Checks the given pointer to ensure that it has been allocated
+ * properly (i.e. not null). If null, it exits the program.
+ * function - is the name of the function in which the ptr was allocated.
+ */
+void check_allocated_mem(const char* function, void * input) {
+	if(input == NULL) {
+		char err_msg[] = "Memory Allocation Failure in ";
+		int size = strlen(function) + 1 + 30;
+		char err[size];
+		memset(&err, 0, size);
+		strcat(err, err_msg);
+		strcat(err, function);
+		print_error(err);
+		exit(EXIT_FAILURE);
+	}
+}
+
 
 /***** TESTS *******/
 void test_all(void) {
+	test_join_path();
 	test_exists_file();
 	test_can_execute_file();
 	test_is_builtin_command();
@@ -338,3 +405,14 @@ void test_exists_file(void) {
 	char * test = "/sbin/dhclient";
 	assert(exists_file(test) == 1);
 }
+
+
+void test_join_path(void) {
+	char dir1[] = "/sbin/";
+	char dir2[] = "/sbin";
+	char path[] = "dhclient";
+	char expected[] = "/sbin/dhclient";
+	assert(strcmp(expected, join_path(dir1, path)) == 0);
+	assert(strcmp(expected, join_path(dir2, path)) == 0);
+}
+
