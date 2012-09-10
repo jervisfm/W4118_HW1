@@ -74,13 +74,6 @@ char* read_line()
 	return line;
 }
 
-void test_read_line() {
-	char* c = read_line();
-
-	printf("\nWe read: \n%s\n", c);
-	return;
-}
-
 /**
  * This parses the given line into separate string.
  * The delimeter used by default is whitespace.
@@ -202,9 +195,20 @@ void print_error(const char* err) {
 	printf("error: %s", err);
 }
 
+/* Checks if given command is a builtin command.
+ * Returns 1 if true and 0 if false. */
+int is_builtin_command(const char* cmd) {
+	int i = 0;
+	for(i = 0; i < BUILTIN_COMMANDS_SIZE; ++i) {
+		if(strcmp(BUILTIN_COMMANDS[i], cmd) == 0)
+			return 1;
+	}
+	return 0;
+}
+
 /***** TESTS *******/
 void test_all(void) {
-
+	test_is_builtin_command();
 	test_parse_line();
 	test_get_maximum_string();
 	test_initialize_string_array();
@@ -243,6 +247,13 @@ void test_initialize_string_array(void) {
 	}
 }
 
+void test_read_line() {
+	char* c = read_line();
+
+	printf("\nWe read: \n%s\n", c);
+	return;
+}
+
 void test_parse_line(void) {
 	char test[] = "This is a test string 6 7 8 9 10 11 12";
 	//char test2[] = "One Two Three Four Five Six Seven Eight Nine Ten Elven";
@@ -264,3 +275,9 @@ void test_parse_line(void) {
 	assert(strcasecmp(parsed[10], "11") == 0);
 }
 
+void test_is_builtin_command(void) {
+	char * cmd1 = "CD";
+	char* cmd2 = "cd";
+	assert(is_builtin_command(cmd1) == 0);
+	assert(is_builtin_command(cmd2) == 1);
+}

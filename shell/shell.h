@@ -24,6 +24,14 @@ enum ParseMode {
 	reading, skipping
 };
 
+/* Number of builtin commands supported by this shell*/
+#define BUILTIN_COMMANDS_SIZE 3
+enum BuiltinCommand {
+	cd, path, list_history, execute_history
+};
+char* BUILTIN_COMMANDS[] = {"cd", "path", "history"};
+
+
 int test_print(void);
 
 /*
@@ -56,6 +64,8 @@ int get_maximum_string(const char* line);
 
 void initialize_string_array(char* array[], int buffer_size, int array_size);
 
+int is_builtin_command(const char* line);
+
 
 
 /**
@@ -66,6 +76,6 @@ void test_get_maximum_string(void);
 void test_read_line(void);
 void test_parse_line(void);
 void test_initialize_string_array(void);
-
+void test_is_builtin_command(void);
 
 #endif /* SHELL_H_ */
