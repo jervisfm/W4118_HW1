@@ -278,13 +278,79 @@ int run_change_directory(const char* cmd) {
 /*
  * Gets the full path represented by the given cmd.
  * The full path is obtained by searching through the
- * global PATH class variable.
+ * global PATH class variable for the first suitable path.
  * Caller is responsible for freeing returned char*
  */
 char* get_full_path(const char* cmd) {
 	/*To be completed */
+
 	return NULL;
 }
+
+void init(void) {
+	initialize_path_list();
+}
+
+void initialize_path_list(void) {
+	PATH.paths = calloc(1, sizeof(struct String));
+	check_allocated_mem("initialize_path_list", PATH.paths);
+	PATH.size = 1;
+	PATH.paths->size = 1;
+	PATH.paths->data = calloc(1, sizeof(char));
+	check_allocated_mem("initialize_path_list", PATH.paths->data);
+	PATH.paths->next = NULL;
+}
+
+
+void add_string_to_path_list(const char* string, struct Paths* arr) {
+	int size = arr->size;
+	int new_size = size + 1;
+
+	/* make new string strcuture with data*/
+	struct String* new_string = calloc(1, sizeof(struct String));
+	check_allocated_mem("add_string_to_path_list", new_string);
+
+	int string_size = strlen(string);
+	char* copy =  calloc(string_size + 1, sizeof(char));
+	check_allocated_mem("add_string_to_path_list", new_string);
+
+	/* use string_size + 1 so that copy is null - terminated */
+	strncpy(copy, string, string_size + 1);
+	new_string->data = copy;
+	new_string->size = string_size + 1;
+
+	/* insert new string into list */
+	new_string->next = arr->paths;
+	arr->paths = new_string;
+
+	arr->size = new_size;
+}
+
+/**
+ * Removes the given string from the specified Path list
+ */
+void remove_string_from_path_list(const char* string, struct Paths* list) {
+	struct String* curr = list->paths;
+	struct String* prev = curr;
+	int first_run = 1;
+	for(; curr != NULL; curr = curr->next) {
+
+		if(strcmp(curr->data, string) == 0 ) {/* found node to remove*/
+			prev->next = curr->next;
+			list->size--;
+			free(curr);
+			break;
+		}
+
+		/*keep track of previous node */
+		if(!first_run) {
+			prev = curr;
+		} else {
+			first_run = 0;
+		}
+	}
+}
+
 
 /*Returns the type of the  given command with NO arguments.
  * or -1 on error
@@ -409,6 +475,8 @@ void check_allocated_mem(const char* function, void * input) {
 
 /***** TESTS *******/
 void test_all(void) {
+	test_add_string_to_path_list();
+	test_remove_string_from_path_list();
 	test_get_first_path_index();
 	test_join_path();
 	test_exists_file();
@@ -512,4 +580,31 @@ void test_get_first_path_index(void) {
 	int array_size = 3;
 	int index = get_first_path_index(cmd, paths, array_size);
 	assert(index == 2);
+}
+
+void test_add_string_to_path_list(void) {
+	init();
+	add_string_to_path_list("one", &PATH);
+	add_string_to_path_list("two", &PATH);
+	add_string_to_path_list("three", &PATH);
+
+	assert(strcmp(PATH.paths->data, "one"));
+	assert(PATH.paths->size == 4);
+	assert(strcmp(PATH.paths->next->data, "two"));
+	assert(strcmp(PATH.paths->next->next->data, "three"));
+	assert(PATH.size == 3);
+}
+
+void test_remove_string_from_path_list(void) {
+	init();
+	add_string_to_path_list("one", &PATH);
+	add_string_to_path_list("two", &PATH);
+	add_string_to_path_list("three", &PATH);
+
+	remove_string_from_path_list("two", &PATH);
+
+	assert(strcmp(PATH.paths->data, "one"));
+	assert(PATH.paths->size == 4);
+	assert(strcmp(PATH.paths->next->data, "three"));
+	assert(PATH.size == 2);
 }

@@ -8,6 +8,21 @@
 #define SHELL_H_
 
 #define TEXT "test text"
+
+struct String {
+	char* data; /*string data*/
+	int size; /*includes null character */
+	struct String* next; /*Next list item*/
+};
+
+struct Paths {
+	struct String* paths; /*Paths dynamic list*/
+	int size; /*current number of elements*/
+};
+
+/* Stores the Search paths*/
+struct Paths PATH;
+
 /**
  * The maximum number of arguments that can be input
  * on the shell, including the actual command.
@@ -50,6 +65,17 @@ void print_error(const char* err);
  * Print the shell prompt
  */
 void print_prompt();
+
+/*Initialize relevant global variables & structures*/
+void init(void);
+
+/* Initialize array structure that stores list of exec paths*/
+void initialize_path_list(void);
+
+/*Adds a new string to path array*/
+void add_string_to_path_list(const char* string, struct Paths* arr);
+
+void remove_string_from_path_list(const char* string, struct Paths* list);
 
 /**
  * This parses the given line into separate string.
@@ -101,5 +127,7 @@ void test_can_execute_file(void);
 void test_exists_file(void);
 void test_join_path(void);
 void test_get_first_path_index(void);
+void test_add_string_to_path_list(void);
+void test_remove_string_from_path_list(void);
 
 #endif /* SHELL_H_ */
