@@ -9,17 +9,7 @@
 
 int test (int argc, char** argv)
 {
-	char* ta[5];
-	const int SIZE = 5;
-	int i = 0;
-	for(i = 0; i < SIZE; ++i) {
-		ta[i] = calloc(3,sizeof(char));
-		char *c = ta[i];
-		c[0] = '2';
-	}
-	for (i = 0; i < SIZE; ++i) {
-		printf("'%s'\n", ta[i]);
-	}
+
 
 	return 0;
 
@@ -28,8 +18,8 @@ int test (int argc, char** argv)
 
 int main(int argc, char **argv)
 {
-	//test(argc, argv);
-	test_all();
+	test(argc, argv);
+	//test_all();
 	return 0;
 }
 
