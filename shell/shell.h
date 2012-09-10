@@ -16,6 +16,14 @@
  */
 #define MAXIMUM_ARGUMENTS 11
 
+/**
+ * Reading - we count this character as being part of the string
+ * Skipping - we skip over the "whitespace" character and reset count.
+ */
+enum ParseMode {
+	reading, skipping
+};
+
 int test_print(void);
 
 /*
@@ -39,12 +47,15 @@ void print_prompt();
  * This parses the given line into separate string.
  * The delimeter used by default is whitespace.
  */
-void parse_line(const char* line, char* parsed[]);
+void parse_line(const char* line, char* parsed[], const int size);
 
 /**
  * Finds the maximum string in the given line.
  */
 int get_maximum_string(const char* line);
+
+void initialize_string_array(char* array[], int buffer_size, int array_size);
+
 
 
 /**
@@ -52,6 +63,9 @@ int get_maximum_string(const char* line);
  */
 void test_all(void);
 void test_get_maximum_string(void);
+void test_read_line(void);
+void test_parse_line(void);
+void test_initialize_string_array(void);
 
 
 #endif /* SHELL_H_ */
