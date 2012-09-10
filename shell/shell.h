@@ -66,7 +66,7 @@ void initialize_string_array(char* array[], int buffer_size, int array_size);
 
 int is_builtin_command(const char* line);
 
-
+int run_command(const char* cmd[], int array_size);
 
 /**
  * Tests

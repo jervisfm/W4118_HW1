@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <assert.h>
 #include <string.h>
+#include <unistd.h>
 #include "shell.h"
 
 
@@ -18,8 +19,8 @@ int test (int argc, char** argv)
 
 int main(int argc, char **argv)
 {
-	test(argc, argv);
-	//test_all();
+	//test(argc, argv);
+	test_all();
 	return 0;
 }
 
@@ -196,6 +197,15 @@ int is_builtin_command(const char* cmd) {
 	return 0;
 }
 
+
+int run_command(const char* cmd[], int array_size) {
+	char* command = cmd[0];
+	int params_size = array_size - 1;
+	char** params = &cmd[1];
+
+
+}
+
 /***** TESTS *******/
 void test_all(void) {
 	test_is_builtin_command();
@@ -239,7 +249,6 @@ void test_initialize_string_array(void) {
 
 void test_read_line() {
 	char* c = read_line();
-
 	printf("\nWe read: \n%s\n", c);
 	return;
 }
