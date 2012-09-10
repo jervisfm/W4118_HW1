@@ -208,9 +208,8 @@ int is_builtin_command(const char* cmd) {
 
 
 int run_command(const char* cmd[], int array_size) {
-	char* command = cmd[0];
-	int params_size = array_size - 1;
-	char** params = &cmd[1];
+	const char* command = cmd[0];
+	char * const * params = (char* const *) &cmd[1];
 	int pid;
 	pid = fork();
 	if(pid < 0) { /* an error occured */
@@ -284,6 +283,7 @@ int run_change_directory(const char* cmd) {
  */
 char* get_full_path(const char* cmd) {
 	/*To be completed */
+	return NULL;
 }
 
 /*Returns the type of the  given command with NO arguments.
