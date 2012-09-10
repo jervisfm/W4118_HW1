@@ -211,13 +211,51 @@ int run_command(const char* cmd[], int array_size) {
 //	char* command = cmd[0];
 //	int params_size = array_size - 1;
 //	char** params = &cmd[1];
+//	int pid;
+//	pid = fork();
+//	if(pid < 0) { /* an error occured */
+//		print_error("Forking failed - Cannot execute given command.");
+//		return -1;
+//	} else if (pid == 0 ) { /*this is the child process*/
+//		execv(command, params);
+//	} else { /* pid > 0 :  i.e. parent process*/
+//
+//	}
 
 	return 0;
 
 }
 
+/**
+ * Determines if the given file path exists or not.
+ * return 1 on success and 0 on failure
+ */
+int exists_file(const char* file_path) {
+	/* access returns 0 on success */
+	if (access(file_path, R_OK) == 0) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+/**
+ * Determines if the given file can be ran
+ */
+int can_execute_file(const char* file_path) {
+	/* access returns 0 on success */
+	if (access(file_path, X_OK) == 0) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+
 /***** TESTS *******/
 void test_all(void) {
+	test_exists_file();
+	test_can_execute_file();
 	test_is_builtin_command();
 	test_parse_line();
 	test_get_maximum_string();
@@ -289,4 +327,14 @@ void test_is_builtin_command(void) {
 	char* cmd2 = "cd";
 	assert(is_builtin_command(cmd1) == 0);
 	assert(is_builtin_command(cmd2) == 1);
+}
+
+void test_can_execute_file(void) {
+	char * test = "/sbin/dhclient";
+	assert(can_execute_file(test) == 1);
+}
+
+void test_exists_file(void) {
+	char * test = "/sbin/dhclient";
+	assert(exists_file(test) == 1);
 }

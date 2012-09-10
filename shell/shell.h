@@ -68,6 +68,10 @@ int is_builtin_command(const char* line);
 
 int run_command(const char* cmd[], int array_size);
 
+int exists_file(const char* file_path);
+
+int can_execute_file(const char* file_path);
+
 /**
  * Tests
  */
@@ -77,5 +81,7 @@ void test_read_line(void);
 void test_parse_line(void);
 void test_initialize_string_array(void);
 void test_is_builtin_command(void);
+void test_can_execute_file(void);
+void test_exists_file(void);
 
 #endif /* SHELL_H_ */
