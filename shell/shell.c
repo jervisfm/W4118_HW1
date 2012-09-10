@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/wait.h>
 #include "shell.h"
 
 
@@ -77,7 +78,7 @@ char* read_line()
 void parse_line(const char* line, char* parsed[], const int size)
 {
 	int buffer_size = get_maximum_string(line) + 1;
-	printf("Max Buffer : %d\n", buffer_size);
+	/* printf("Max Buffer : %d\n", buffer_size); */
 	initialize_string_array(parsed, buffer_size, MAXIMUM_ARGUMENTS);
 	int string_no = 0;
 
@@ -137,7 +138,6 @@ void parse_line(const char* line, char* parsed[], const int size)
  */
 void initialize_string_array(char* array[], int buffer_size, int array_size) {
 	int i = 0;
-	printf("%d", buffer_size);
 
 	for(i = 0; i < array_size; ++i) {
 		array[i] = (char*) calloc(buffer_size, sizeof(char));
@@ -208,22 +208,76 @@ int is_builtin_command(const char* cmd) {
 
 
 int run_command(const char* cmd[], int array_size) {
-//	char* command = cmd[0];
-//	int params_size = array_size - 1;
-//	char** params = &cmd[1];
-//	int pid;
-//	pid = fork();
-//	if(pid < 0) { /* an error occured */
-//		print_error("Forking failed - Cannot execute given command.");
-//		return -1;
-//	} else if (pid == 0 ) { /*this is the child process*/
-//		execv(command, params);
-//	} else { /* pid > 0 :  i.e. parent process*/
-//
-//	}
+	char* command = cmd[0];
+	int params_size = array_size - 1;
+	char** params = &cmd[1];
+	int pid;
+	pid = fork();
+	if(pid < 0) { /* an error occured */
+		print_error("Forking failed - Cannot execute given command.");
+		return -1;
+	} else if (pid == 0 ) { /*this is the child process*/
+		if(is_builtin_command(command)) {
+			run_builtin_command(command);
+		}
 
+		char* full_path = get_full_path(command);
+
+		execv(full_path, params);
+
+		/* We only get here if an error occurs in executing
+		 * given command*/
+		print_error("Unknown command\n");
+		exit(EXIT_FAILURE);
+
+	} else { /* pid > 0 :  i.e. parent process*/
+		while(wait(NULL) != pid);
+	}
 	return 0;
+}
 
+/**
+ * Runs the builtin command.
+ * Return 1 on success and 0 on failure.
+ */
+int run_builtin_command(const char* cmd) {
+	/* To be completed*/
+	return 0;
+}
+
+/*
+ * Gets the full path represented by the given cmd.
+ * The full path is obtained by searching through the
+ * global PATH class variable.
+ * Caller is responsible for freeing returned char*
+ */
+char* get_full_path(const char* cmd) {
+	/*To be completed */
+}
+
+/*Returns the type of the  given command with NO arguments.
+ * or -1 on error
+ */
+int get_command_type(const char* cmd) {
+	if(strcmp(cmd, "cd")) {
+		return cd;
+	} else  if(strcmp(cmd, "path")) {
+		return path;
+	}  else if(strcmp(cmd, "history")) {
+		return list_history;
+	} else {
+		/*check if it's the execute history cmd !n where n is
+		 * a number  or not*/
+		if(cmd[0] == '!') {
+			int i = 1;
+			for(; cmd[i] != '\0'; ++i) {
+				if(!isdigit(cmd[i])) {
+					return -1;
+				}
+			}
+		}
+		return execute_history;
+	}
 }
 
 /**

@@ -26,7 +26,7 @@ enum ParseMode {
 
 /* Number of builtin commands supported by this shell*/
 #define BUILTIN_COMMANDS_SIZE 3
-enum BuiltinCommand {
+enum CommandType {
 	cd, path, list_history, execute_history
 };
 char* BUILTIN_COMMANDS[] = {"cd", "path", "history"};
@@ -77,6 +77,12 @@ void check_allocated_mem(const char* function, void * input);
 char* join_path(const char* dir, const char* path);
 
 int get_first_path_index(const char* cmd, const char* paths[], int array_size);
+
+int get_command_type(const char* cmd);
+
+int run_builtin_command(const char* cmd);
+
+char* get_full_path(const char* cmd);
 
 /**
  * Tests
