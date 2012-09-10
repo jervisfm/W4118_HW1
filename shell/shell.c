@@ -253,14 +253,18 @@ int can_execute_file(const char* file_path) {
 }
 
 /*
- * Returns the index of the first path for which the given
- * cmd is found.
+ * Returns the index of the first eligible path for which the given
+ * command is found.
  * Otherwise returns -1 to indicate cmd was not found in any path
  */
 int get_first_path_index(const char* cmd, const char* paths[], int array_size) {
 	int i = 0;
 	for(; i < array_size; ++i) {
-
+		char* full_path = join_path(paths[i], cmd);
+		if (exists_file(full_path) && can_execute_file(full_path)) {
+			return i;
+		}
+		free(full_path);
 	}
 	return -1;
 }
@@ -320,6 +324,7 @@ void check_allocated_mem(const char* function, void * input) {
 
 /***** TESTS *******/
 void test_all(void) {
+	test_get_first_path_index();
 	test_join_path();
 	test_exists_file();
 	test_can_execute_file();
@@ -416,3 +421,10 @@ void test_join_path(void) {
 	assert(strcmp(expected, join_path(dir2, path)) == 0);
 }
 
+void test_get_first_path_index(void) {
+	const char* paths[] =  {"/tmp", "/home", "/sbin"} ;
+	char cmd[]="dhclient";
+	int array_size = 3;
+	int index = get_first_path_index(cmd, paths, array_size);
+	assert(index == 2);
+}

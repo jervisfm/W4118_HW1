@@ -74,6 +74,10 @@ int can_execute_file(const char* file_path);
 
 void check_allocated_mem(const char* function, void * input);
 
+char* join_path(const char* dir, const char* path);
+
+int get_first_path_index(const char* cmd, const char* paths[], int array_size);
+
 /**
  * Tests
  */
@@ -86,5 +90,6 @@ void test_is_builtin_command(void);
 void test_can_execute_file(void);
 void test_exists_file(void);
 void test_join_path(void);
+void test_get_first_path_index(void);
 
 #endif /* SHELL_H_ */
