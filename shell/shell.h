@@ -41,4 +41,17 @@ void print_prompt();
  */
 void parse_line(const char* line, char* parsed[]);
 
+/**
+ * Finds the maximum string in the given line.
+ */
+int get_maximum_string(const char* line);
+
+
+/**
+ * Tests
+ */
+void test_all(void);
+void test_get_maximum_string(void);
+
+
 #endif /* SHELL_H_ */
