@@ -54,6 +54,10 @@ char* read_line()
 		++string_size;
 		int new_buffersize = sizeof(char) * (string_size);
 		line = realloc(line, new_buffersize);
+		if(line == NULL) {
+			print_error("ReadLine memory reallocation failed");
+			return NULL;
+		}
 		line[i] = c;
 		line[i+1] = '\0';
 		++i;
@@ -137,6 +141,11 @@ void initialize_string_array(char* array[], int buffer_size, int array_size) {
 
 	for(i = 0; i < array_size; ++i) {
 		array[i] = (char*) calloc(buffer_size, sizeof(char));
+		if(array[i] == NULL) {
+			print_error("Memory allocation failed in "
+				    "initialize_string_array");
+			exit(EXIT_FAILURE);
+		}
 	}
 }
 
@@ -199,10 +208,11 @@ int is_builtin_command(const char* cmd) {
 
 
 int run_command(const char* cmd[], int array_size) {
-	char* command = cmd[0];
-	int params_size = array_size - 1;
-	char** params = &cmd[1];
+//	char* command = cmd[0];
+//	int params_size = array_size - 1;
+//	char** params = &cmd[1];
 
+	return 0;
 
 }
 
