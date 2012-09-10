@@ -245,6 +245,37 @@ int run_builtin_command(const char* cmd) {
 	return 0;
 }
 
+/**
+ * Runs the builtin list history command
+ */
+int run_list_history(void) {
+	/* To be implemented*/
+	return -1;
+}
+
+/**
+ * Runs the execute history command.
+ * Command is of the form !n where n is an number.
+ * At the moment, N supports at most 100 commands.
+ */
+int run_execute_history(const char* cmd) {
+	return -1;
+}
+
+/*Runs the PATH builtin command */
+int run_path_cmd(const char* cmd) {
+	/* to be completed */
+	return -1;
+}
+
+/* Runs the change directory command */
+int run_change_directory(const char* cmd) {
+	/* to be completed */
+	return -1;
+}
+
+
+
 /*
  * Gets the full path represented by the given cmd.
  * The full path is obtained by searching through the

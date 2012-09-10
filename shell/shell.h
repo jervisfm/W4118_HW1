@@ -84,6 +84,10 @@ int run_builtin_command(const char* cmd);
 
 char* get_full_path(const char* cmd);
 
+int run_list_history(void);
+
+int run_path_cmd(const char* cmd);
+
 /**
  * Tests
  */
