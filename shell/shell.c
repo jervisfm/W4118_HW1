@@ -96,13 +96,13 @@ int get_maximum_string(const char* line) {
 			case reading:
 			{
 				++size;
+				if (size > max) {
+					max = size;
+				}
 				break;
 			}
 			case skipping:
 			{
-				if(size > max) {
-					max = size;
-				}
 				size = 0;
 				break;
 			}
@@ -125,6 +125,7 @@ void print_error(const char* err) {
 /***** TESTS *******/
 void test_all(void) {
 	test_get_maximum_string();
+	printf("\n*** ALL Tests Passed! ***** \n");
 }
 
 int test_print(void) {
@@ -132,9 +133,17 @@ int test_print(void) {
 	return 0;
 }
 void test_get_maximum_string(void) {
-//	char test[] = " This is a test string";
-//	char test2[]= "This is a VeryLongTestString";
+	char test[] = " This is a test string ";
+	char test2[]= "This is a VeryLongTestString";
 
-	assert(1 == 1);
+	const int expected_max1 = 6;
+	const int expected_max2 = 18;
+
+	int actual_max1 = get_maximum_string(test);
+	int actual_max2 = get_maximum_string(test2);
+	assert(expected_max1 == actual_max1);
+	printf("expected max2 == %d", expected_max2);
+	printf("\nactual max2 == %d", actual_max2);
+	assert(expected_max2 == actual_max2);
 }
 
