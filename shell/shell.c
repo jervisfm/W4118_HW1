@@ -230,7 +230,9 @@ int run_command(const char* cmd[], int array_size) {
 		exit(EXIT_FAILURE);
 
 	} else { /* pid > 0 :  i.e. parent process*/
-		while(wait(NULL) != pid);
+		int num;
+		/* wait for child process for finish running */
+		while(wait(&num) != pid);
 	}
 	return 0;
 }
@@ -283,8 +285,20 @@ int run_change_directory(const char* cmd) {
  */
 char* get_full_path(const char* cmd) {
 	/*To be completed */
-
-	return NULL;
+	if(is_absolute_path(cmd)) {
+		return (char *) cmd;
+	} else {
+		/* passing null auto-allocates the char buffer */
+		char* curr_path = getcwd(NULL, 0);
+		if(curr_path == NULL) {
+			/* An error occured */
+			perror("Failed to get current directory");
+			return NULL;
+		}
+		char* full_path = join_path(curr_path, cmd);
+		free(curr_path);
+		return full_path;
+	}
 }
 
 void init(void) {
