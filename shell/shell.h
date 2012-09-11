@@ -114,6 +114,8 @@ int run_list_history(void);
 
 int run_path_cmd(const char* cmd);
 
+int is_absolute_path(const char* cmd);
+
 /**
  * Tests
  */
@@ -129,5 +131,6 @@ void test_join_path(void);
 void test_get_first_path_index(void);
 void test_add_string_to_path_list(void);
 void test_remove_string_from_path_list(void);
+void test_is_absolute_path(void);
 
 #endif /* SHELL_H_ */

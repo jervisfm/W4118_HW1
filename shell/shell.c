@@ -297,6 +297,27 @@ void initialize_path_list(void) {
 }
 
 
+/**
+ * Determines if the given paths has  "/" at the beginning
+ * ignoring any white space that preceeds it.
+ * i.e. "    /abs" is also an absolute path.
+ */
+int is_absolute_path(const char* cmd) {
+	int i = 0;
+	for(; cmd[i] != '\0'; ++i) {
+		/*skip over initial whitespace*/
+		if(isspace(cmd[i])){
+			continue;
+		}
+		if(cmd[i] == '/'){
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	return 0;
+}
+
 void add_string_to_path_list(const char* string, struct Paths* arr) {
 	int size = arr->size;
 	int new_size = size + 1;
@@ -475,6 +496,7 @@ void check_allocated_mem(const char* function, void * input) {
 
 /***** TESTS *******/
 void test_all(void) {
+	test_is_absolute_path();
 	test_add_string_to_path_list();
 	test_remove_string_from_path_list();
 	test_get_first_path_index();
@@ -610,4 +632,11 @@ void test_remove_string_from_path_list(void) {
 	assert(strcmp(PATH.paths->next->data, "one") == 0);
 	assert(PATH.paths->next->size == 4);
 	assert(PATH.size == 2);
+}
+
+void test_is_absolute_path(void) {
+	char test[] = "    /abs/test/yes";
+	char test2[] = "    no/relative";
+	assert(is_absolute_path(test) == 1);
+	assert(is_absolute_path(test2) == 0);
 }
