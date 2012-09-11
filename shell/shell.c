@@ -510,6 +510,7 @@ void check_allocated_mem(const char* function, void * input) {
 
 /***** TESTS *******/
 void test_all(void) {
+	test_get_full_path();
 	test_is_absolute_path();
 	test_add_string_to_path_list();
 	test_remove_string_from_path_list();
@@ -653,4 +654,16 @@ void test_is_absolute_path(void) {
 	char test2[] = "    no/relative";
 	assert(is_absolute_path(test) == 1);
 	assert(is_absolute_path(test2) == 0);
+}
+
+void test_get_full_path(void) {
+	char dir[] = "/tmp";
+	char path1[] = "ls";
+	char expected1[] = "/tmp/ls";
+
+	char path2[] = "/abs/ls";
+	char expected2[] = "/abs/ls";
+	chdir(dir);
+	assert(strcmp(get_full_path(path1),expected1) == 0);
+	assert(strcmp(get_full_path(path2), expected2) == 0);
 }

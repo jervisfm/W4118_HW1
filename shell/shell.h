@@ -132,5 +132,7 @@ void test_get_first_path_index(void);
 void test_add_string_to_path_list(void);
 void test_remove_string_from_path_list(void);
 void test_is_absolute_path(void);
+void test_get_full_path(void);
+
 
 #endif /* SHELL_H_ */
