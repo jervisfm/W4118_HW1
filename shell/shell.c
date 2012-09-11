@@ -276,7 +276,7 @@ int run_command(const char* cmd[], int array_size) {
 		execv(full_path, params);
 
 		/* We only get here if an error occurs in executing
-		 * given command*/
+		 * given command */
 		print_error("Unknown command\n");
 		/* Kill the child process */
 		exit(EXIT_FAILURE);
