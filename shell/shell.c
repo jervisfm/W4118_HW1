@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <pwd.h>
 #include "shell.h"
 
 
@@ -204,7 +205,7 @@ void print_prompt() {
 }
 
 void print_error(const char* err) {
-	printf("error: %s", err);
+	printf("error: %s\n", err);
 }
 
 /* Checks if given command is a builtin command.
@@ -269,7 +270,7 @@ int run_command(const char* cmd[], int array_size) {
 		return 0;
 	} else if (pid == 0 ) { /*this is the child process*/
 		if(is_builtin_command(command)) {
-			run_builtin_command(command);
+			run_builtin_command(cmd);
 		}
 
 		char* full_path = get_full_path(command);
@@ -302,8 +303,26 @@ int should_exit(const char* cmd) {
  * Runs the builtin command.
  * Return 1 on success and 0 on failure.
  */
-int run_builtin_command(const char* cmd) {
-	/* To be completed*/
+int run_builtin_command(const char* cmd[]) {
+	int cmd_type = get_command_type(cmd[0]);
+	printf("cmd type == %d | %d\n", cmd_type, cd);
+	switch (cmd_type) {
+		case cd: {
+			run_change_directory(cmd);
+			break;
+		}
+		case path: {
+			break;
+		}
+		case list_history: {
+			break;
+		}
+		case execute_history: {
+			break;
+		}
+		default:
+			break;
+	}
 	return 0;
 }
 
@@ -331,12 +350,36 @@ int run_path_cmd(const char* cmd) {
 }
 
 /* Runs the change directory command */
-int run_change_directory(const char* cmd) {
+int run_change_directory(const char* cmd[]) {
 	/* to be completed */
-	return -1;
+	int ret;
+	if(strcmp(cmd[1], "") == 0) { /* No params given*/
+		/*
+		 * No params given. Return to home directory.
+		 */
+		uid_t uid = getuid();
+		struct passwd* user_info_ptr = getpwuid(uid);
+		char* user_home = user_info_ptr->pw_dir;
+		if(user_home != NULL) {
+			ret = chdir(user_home);
+		} else {
+			/*
+			 * Go to home folder.
+			 */
+			ret = chdir("/home");
+		}
+	} else {
+		ret = chdir(cmd[1]);
+	}
+
+	if(ret == -1) { /* an error occured */
+		print_error("Changed directory command failed");
+		perror(NULL);
+		return 0;
+	} else {
+		return 1;
+	}
 }
-
-
 
 /*
  * Gets the full path represented by the given cmd.
@@ -452,11 +495,11 @@ void remove_string_from_path_list(const char* string, struct Paths* list) {
  * or -1 on error
  */
 int get_command_type(const char* cmd) {
-	if(strcmp(cmd, "cd")) {
+	if(strcmp(cmd, "cd") == 0) {
 		return cd;
-	} else  if(strcmp(cmd, "path")) {
+	} else  if(strcmp(cmd, "path") == 0) {
 		return path;
-	}  else if(strcmp(cmd, "history")) {
+	}  else if(strcmp(cmd, "history") == 0) {
 		return list_history;
 	} else {
 		/*check if it's the execute history cmd !n where n is

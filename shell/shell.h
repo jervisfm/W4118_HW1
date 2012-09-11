@@ -106,7 +106,7 @@ int get_first_path_index(const char* cmd, const char* paths[], int array_size);
 
 int get_command_type(const char* cmd);
 
-int run_builtin_command(const char* cmd);
+int run_builtin_command(const char* cmd[]);
 
 char* get_full_path(const char* cmd);
 
@@ -123,6 +123,8 @@ int run_shell(void);
 void free_pointer_array(void** array, int array_size);
 
 int should_exit(const char* cmd);
+
+int run_change_directory(const char* cmd[]);
 
 /**
  * Tests
