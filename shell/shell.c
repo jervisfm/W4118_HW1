@@ -19,8 +19,8 @@ int test (int argc, char** argv)
 int main(int argc, char **argv)
 {
 	//test(argc, argv);
-	test_all();
-	//run_shell();
+	//test_all();
+	run_shell();
 	return 0;
 }
 
@@ -36,6 +36,7 @@ int run_shell(void) {
 		char* parsed[MAXIMUM_ARGUMENTS];
 		parse_line(user_input, parsed, MAXIMUM_ARGUMENTS);
 		run_command((const char**)parsed, MAXIMUM_ARGUMENTS);
+		free(user_input);
 	}
 }
 
@@ -111,7 +112,7 @@ void parse_line(const char* line, char* parsed[], const int size)
 
 
 		if(string_no >= MAXIMUM_ARGUMENTS) {
-			printf("Only %d arguments were considered",
+			printf("Only considering %d arguments\n",
 				MAXIMUM_ARGUMENTS - 1);
 			break;
 		}
@@ -227,33 +228,45 @@ int is_builtin_command(const char* cmd) {
  * Also, immendiately after the last argument, there will be
  * a NULL pointer. This is the format that the execv command expects.
  *
+ * Size of the return array is set in the parameter 'param_size'
+ *
  * Caller is responsible for freeing returned array.
+ *
  */
-char* const* get_params(const char* cmd[], int array_size) {
+char* const* get_params(const char* cmd[], int array_size, int* param_size) {
 	/* Duplicate given command with its parameters
 	 * but leave space for one extra NULL element at the end*/
 	char** copy = calloc(array_size + 1, sizeof(char*));
 	copy[array_size] = NULL;
 	int i = 0;
+	*param_size = 0;
 	for(; i < array_size; ++i) {
-		/* Nullify any elements which are is NOT being used */
+		/* Nullify any elements which are NOT being used */
 		if(strcmp(cmd[i],"") == 0) {
+			free(copy[i]);
 			copy[i] = NULL;
 			continue;
 		}
 		copy[i] = strdup(cmd[i]);
+		*param_size = *param_size + 1;
 	}
 	return (char* const*) copy;
 }
 
 int run_command(const char* cmd[], int array_size) {
+	int param_size;
 	const char* command = cmd[0];
-	char * const * params = get_params(cmd, array_size);
+	char * const * params = get_params(cmd, array_size, &param_size);
+
+	if(should_exit(command)) {
+		exit(EXIT_SUCCESS);
+	}
+
 	int pid;
 	pid = fork();
 	if(pid < 0) { /* an error occured */
 		print_error("Forking failed - Cannot execute given command.");
-		return -1;
+		return 0;
 	} else if (pid == 0 ) { /*this is the child process*/
 		if(is_builtin_command(command)) {
 			run_builtin_command(command);
@@ -273,7 +286,16 @@ int run_command(const char* cmd[], int array_size) {
 		/* wait for child process for finish running */
 		while(wait(&status) != pid);
 	}
+	free_pointer_array((void**)params, param_size);
 	return 1;
+}
+
+int should_exit(const char* cmd) {
+	if(strcmp(cmd,"exit") == 0) {
+		return 1;
+	} else {
+		return 0;
+	}
 }
 
 /**
@@ -555,7 +577,9 @@ void check_allocated_mem(const char* function, void * input) {
 void free_pointer_array(void** array, int array_size) {
 	int i = 0;
 	for(; i < array_size; ++i) {
-		free(array[i]);
+		if(array[i] != NULL) {
+			free(array[i]);
+		}
 	}
 	free(array);
 }
