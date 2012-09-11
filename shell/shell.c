@@ -19,8 +19,8 @@ int test (int argc, char** argv)
 int main(int argc, char **argv)
 {
 	//test(argc, argv);
-	//test_all();
-	run_shell();
+	test_all();
+	//run_shell();
 	return 0;
 }
 
@@ -546,9 +546,23 @@ void check_allocated_mem(const char* function, void * input) {
 	}
 }
 
+/*
+ * Frees a dynamically allocated array of pointers.
+ * That is, the pointers MUST point to a region of dynamically allocated
+ * memory, in addition to the array of pointers itself being dynamically
+ * allocated.
+ */
+void free_pointer_array(void** array, int array_size) {
+	int i = 0;
+	for(; i < array_size; ++i) {
+		free(array[i]);
+	}
+	free(array);
+}
 
 /***** TESTS *******/
 void test_all(void) {
+	test_free_pointer_array();
 	test_get_full_path();
 	test_is_absolute_path();
 	test_add_string_to_path_list();
@@ -724,4 +738,16 @@ void test_execv(void) {
 		perror("An error occurred while execing");
 		exit(-1);
 	}
+}
+
+void test_free_pointer_array(void) {
+	char** test = (char**) calloc(2, sizeof(char*));
+	int size =2;
+	int  i =0;
+	for(; i < size; ++i) {
+		test[i] = calloc(4, sizeof(char));
+		strncat(test[i],"two" ,4 );
+	}
+	free_pointer_array((void**)test, size);
+	assert(1);
 }

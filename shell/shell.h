@@ -120,6 +120,8 @@ char* const* get_params(const char* cmd[], int array_size);
 
 int run_shell(void);
 
+void free_pointer_array(void** array, int array_size);
+
 /**
  * Tests
  */
@@ -137,6 +139,7 @@ void test_add_string_to_path_list(void);
 void test_remove_string_from_path_list(void);
 void test_is_absolute_path(void);
 void test_get_full_path(void);
-
+void test_execv(void);
+void test_free_pointer_array(void);
 
 #endif /* SHELL_H_ */
