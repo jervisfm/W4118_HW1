@@ -116,6 +116,10 @@ int run_path_cmd(const char* cmd);
 
 int is_absolute_path(const char* cmd);
 
+char* const* get_params(const char* cmd[], int array_size);
+
+int run_shell(void);
+
 /**
  * Tests
  */

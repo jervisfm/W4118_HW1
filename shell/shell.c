@@ -11,8 +11,6 @@
 
 int test (int argc, char** argv)
 {
-
-
 	return 0;
 
 }
@@ -21,11 +19,25 @@ int test (int argc, char** argv)
 int main(int argc, char **argv)
 {
 	//test(argc, argv);
-	test_all();
+	//test_all();
+	run_shell();
 	return 0;
 }
 
 
+/* Executes a very basic shell
+ * This is a simple shell that can has ls path and history
+ * commands builtin. Type exit to quit and close the shell.
+ */
+int run_shell(void) {
+	while(1) {
+		print_prompt();
+		char* user_input = read_line();
+		char* parsed[MAXIMUM_ARGUMENTS];
+		parse_line(user_input, parsed, MAXIMUM_ARGUMENTS);
+		run_command((const char**)parsed, MAXIMUM_ARGUMENTS);
+	}
+}
 
 
 /*
@@ -100,7 +112,7 @@ void parse_line(const char* line, char* parsed[], const int size)
 
 		if(string_no >= MAXIMUM_ARGUMENTS) {
 			printf("Only %d arguments were considered",
-				MAXIMUM_ARGUMENTS);
+				MAXIMUM_ARGUMENTS - 1);
 			break;
 		}
 
@@ -138,7 +150,6 @@ void parse_line(const char* line, char* parsed[], const int size)
  */
 void initialize_string_array(char* array[], int buffer_size, int array_size) {
 	int i = 0;
-
 	for(i = 0; i < array_size; ++i) {
 		array[i] = (char*) calloc(buffer_size, sizeof(char));
 		if(array[i] == NULL) {
@@ -188,7 +199,7 @@ int get_maximum_string(const char* line) {
 }
 
 void print_prompt() {
-	printf("$ ");
+	printf("\n$ ");
 }
 
 void print_error(const char* err) {
@@ -207,9 +218,37 @@ int is_builtin_command(const char* cmd) {
 }
 
 
+/**
+ * Parses the given command and returns back an array of
+ * parameters suitable for passing to the execv system call.
+ * By convention, first argument of params is the name of the
+ * program being run w/o any directory paths.
+ *
+ * Also, immendiately after the last argument, there will be
+ * a NULL pointer. This is the format that the execv command expects.
+ *
+ * Caller is responsible for freeing returned array.
+ */
+char* const* get_params(const char* cmd[], int array_size) {
+	/* Duplicate given command with its parameters
+	 * but leave space for one extra NULL element at the end*/
+	char** copy = calloc(array_size + 1, sizeof(char*));
+	copy[array_size] = NULL;
+	int i = 0;
+	for(; i < array_size; ++i) {
+		/* Nullify any elements which are is NOT being used */
+		if(strcmp(cmd[i],"") == 0) {
+			copy[i] = NULL;
+			continue;
+		}
+		copy[i] = strdup(cmd[i]);
+	}
+	return (char* const*) copy;
+}
+
 int run_command(const char* cmd[], int array_size) {
 	const char* command = cmd[0];
-	char * const * params = (char* const *) &cmd[1];
+	char * const * params = get_params(cmd, array_size);
 	int pid;
 	pid = fork();
 	if(pid < 0) { /* an error occured */
@@ -221,20 +260,20 @@ int run_command(const char* cmd[], int array_size) {
 		}
 
 		char* full_path = get_full_path(command);
-
 		execv(full_path, params);
 
 		/* We only get here if an error occurs in executing
 		 * given command*/
 		print_error("Unknown command\n");
+		/* Kill the child process */
 		exit(EXIT_FAILURE);
 
-	} else { /* pid > 0 :  i.e. parent process*/
-		int num;
+	} else { /* pid > 0 :  i.e. parent process */
+		int status;
 		/* wait for child process for finish running */
-		while(wait(&num) != pid);
+		while(wait(&status) != pid);
 	}
-	return 0;
+	return 1;
 }
 
 /**
@@ -666,4 +705,23 @@ void test_get_full_path(void) {
 	chdir(dir);
 	assert(strcmp(get_full_path(path1),expected1) == 0);
 	assert(strcmp(get_full_path(path2), expected2) == 0);
+}
+
+void test_execv(void) {
+	printf("Running command...\n");
+	char cmd[] = "/bin/ls";
+	char* params[3];
+	params[0] = cmd;
+	params[1] = 0;
+	//params[1] = NULL;
+	int pid;
+	if((pid = fork())) {
+		int  i;
+		while(wait(&i) != pid);
+	} else {
+		execv(cmd, params);
+		printf("%c", (int)params[0]);
+		perror("An error occurred while execing");
+		exit(-1);
+	}
 }
