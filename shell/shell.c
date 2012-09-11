@@ -262,17 +262,16 @@ int run_command(const char* cmd[], int array_size) {
 	if(should_exit(command)) {
 		exit(EXIT_SUCCESS);
 	}
+	if(is_builtin_command(command)) {
+		return run_builtin_command(cmd);
+	}
 
 	int pid;
 	pid = fork();
 	if(pid < 0) { /* an error occured */
 		print_error("Forking failed - Cannot execute given command.");
 		return 0;
-	} else if (pid == 0 ) { /*this is the child process*/
-		if(is_builtin_command(command)) {
-			run_builtin_command(cmd);
-		}
-
+	} else if (pid == 0 ) { /* this is the child process */
 		char* full_path = get_full_path(command);
 		execv(full_path, params);
 
@@ -305,7 +304,6 @@ int should_exit(const char* cmd) {
  */
 int run_builtin_command(const char* cmd[]) {
 	int cmd_type = get_command_type(cmd[0]);
-	printf("cmd type == %d | %d\n", cmd_type, cd);
 	switch (cmd_type) {
 		case cd: {
 			run_change_directory(cmd);
