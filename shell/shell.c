@@ -362,7 +362,7 @@ int run_change_directory(const char* cmd[]) {
 			ret = chdir(user_home);
 		} else {
 			/*
-			 * Go to home folder.
+			 * Go to home folder, if user's home dir is unknown.
 			 */
 			ret = chdir("/home");
 		}
