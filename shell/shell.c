@@ -496,16 +496,19 @@ char* get_full_path(const char* cmd) {
 	if(is_absolute_path(cmd)) {
 		return (char *) cmd;
 	} else {
-		/* passing null auto-allocates the char buffer */
-		char* curr_path = getcwd(NULL, 0);
-		if(curr_path == NULL) {
+		/* Get the current directory first.
+		  passing null auto-allocates the char buffer */
+		char* curr_dir = getcwd(NULL, 0);
+		if(curr_dir == NULL) {
 			/* An error occured */
-			perror("Failed to get current directory");
+			print_error("Failed to get current directory");
+			perror(NULL);
+			free(curr_dir);
 			return NULL;
 		}
-		char* full_path = join_path(curr_path, cmd);
-		free(curr_path);
-		/* Search the current directory first */
+		char* full_path = NULL;
+
+
 		/* if(exists_file(full_path) && can_execute_file(full_path)) {
 			return full_path;
 		} */
@@ -513,20 +516,26 @@ char* get_full_path(const char* cmd) {
 		/* Test all paths in PATH until we find a
 		 * suitable Path */
 		if(PATH.size > 0) {
-			free(full_path);
 			struct String* curr = PATH.head;
 			for(; curr != NULL; curr = curr->next) {
-				curr_path = curr->data;
-				full_path = join_path(curr_path, cmd);
+				char* curr_path = curr->data;
+				if(is_absolute_path(curr_path)) {
+					full_path = join_path(curr_path, cmd);
+				} else { /*it is a relative path */
+					char* temp = join_path(curr_dir,
+							       curr_path);
+					full_path = join_path(temp, cmd);
+					free(temp);
+				}
 				if(exists_file(full_path) &&
 				   can_execute_file(full_path)) {
-					return full_path;
+					break;
 				}
 				free(full_path);
 			}
 		}
-		/* otherwise we return a non-existent NULL file path */
-		return NULL;
+		free(curr_dir);
+		return full_path;
 	}
 }
 
