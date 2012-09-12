@@ -269,6 +269,7 @@ int run_command(const char* cmd[], int array_size) {
 		exit(EXIT_SUCCESS);
 	}
 	if(is_builtin_command(command)) {
+		record_command_in_history(cmd, array_size);
 		return run_builtin_command(cmd);
 	}
 	record_command_in_history(cmd, array_size);
