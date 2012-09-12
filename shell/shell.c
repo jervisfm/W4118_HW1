@@ -384,6 +384,7 @@ int run_builtin_command(const char* cmd[]) {
 			break;
 		}
 		case list_history: {
+			run_list_history();
 			break;
 		}
 		case execute_history: {
@@ -400,7 +401,14 @@ int run_builtin_command(const char* cmd[]) {
  */
 int run_list_history(void) {
 	/* To be implemented*/
-	return -1;
+	struct String* curr = HISTORY.head;
+	int i = 0;
+	for(; curr != NULL; curr = curr->next) {
+		if(curr->data) {
+			printf("[%d] %s\n", i++, curr->data);
+		}
+	}
+	return 1;
 }
 
 /**
