@@ -266,9 +266,8 @@ int run_command(const char* cmd[], int array_size) {
 	if(is_builtin_command(command)) {
 		return run_builtin_command(cmd);
 	}
-	//char* command_string = combine_string_array(cmd, array_size);
-	//add_string_to_history_list(command_string, &HISTORY);
-	//free(command_string);
+	record_command_in_history(cmd, array_size);
+
 	int pid;
 	pid = fork();
 	if(pid < 0) { /* an error occured */
@@ -293,6 +292,26 @@ int run_command(const char* cmd[], int array_size) {
 	return 1;
 }
 
+/*
+ * Records the given command into the history linked list.
+ */
+void record_command_in_history(const char* cmd[], int array_size) {
+	/*
+	 * Only add the command to the history if it is not
+	 * a history command.
+	 */
+	int cmd_type = get_command_type(cmd[0]);
+	if(cmd_type != list_history || cmd_type != execute_history) {
+		char* full_cmd_string = combine_string_array(cmd, array_size);
+		add_string_to_history_list(full_cmd_string , &HISTORY);
+		free(full_cmd_string);
+	}
+}
+
+/*
+ * Combines the given string array together into one string.
+ * The strings are separated by a single whitespace.
+ */
 char* combine_string_array(const char* cmd[], int array_size) {
 	char* output = calloc(1, sizeof(char));
 	int curr_size = 1;
