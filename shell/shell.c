@@ -15,13 +15,18 @@ int test (int argc, char** argv)
 	return 0;
 
 }
-
+/*
+ * TODO:
+ * -> add history command supprot
+ * -> Test path with"." and ..
+ * -> test relative paths bin/../bin
+ */
 
 int main(int argc, char **argv)
 {
 	//test(argc, argv);
-	test_all();
-	//run_shell();
+	//test_all();
+	run_shell();
 	return 0;
 }
 
