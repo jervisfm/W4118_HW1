@@ -20,6 +20,8 @@ int test (int argc, char** argv)
  * -> add history command supprot
  * -> Test path with"." and ..
  * -> test relative paths bin/../bin
+ * remove new line at beginning.
+ * -> do nothing on empty inpit.
  */
 
 int main(int argc, char **argv)
@@ -44,6 +46,7 @@ int run_shell(void) {
 		parse_line(user_input, parsed, MAX_ARGUMENTS);
 		run_command((const char**)parsed, MAX_ARGUMENTS);
 		free(user_input);
+		//free_pointer_array((void**) parsed);
 	}
 }
 
@@ -294,7 +297,7 @@ int run_command(const char* cmd[], int array_size) {
 		/* wait for child process for finish running */
 		while(wait(&status) != pid);
 	}
-	free_pointer_array((void**)params, param_size);
+	free_pointer_array((void**)params, param_size, 0);
 	return 1;
 }
 
@@ -417,8 +420,25 @@ int run_list_history(void) {
  * Command is of the form !n where n is an number.
  * At the moment, N supports at most 100 commands.
  */
-int run_execute_history(const char* cmd) {
-	return -1;
+int run_execute_history(const char *cmd[]) {
+	/*
+	 * Command has the format !n
+	 * where n is a integer number
+	 */
+	const char* n = &cmd[0][1];
+	int index = atoi(n);
+	struct String* full_command = get_string_at_index(&HISTORY, index);
+	if(full_command == NULL) { /* history index does not exist */
+		print_error("History command index not found");
+		return 0;
+	} else {
+		char* parsed[MAX_ARGUMENTS];
+		char* data = full_command->data;
+		parse_line(data, parsed, MAX_ARGUMENTS);
+		run_command((const char**)parsed, MAX_ARGUMENTS);
+	}
+
+	return 1;
 }
 
 /*Runs the PATH builtin command
@@ -873,20 +893,29 @@ void check_allocated_mem(const char* function, void * input) {
 	}
 }
 
+
 /*
  * Frees a dynamically allocated array of pointers.
  * That is, the pointers MUST point to a region of dynamically allocated
  * memory, in addition to the array of pointers itself being dynamically
  * allocated.
+ *
+ * is_stack_ptr determines if the first pointer is on the stack or not.
+ * For e.g. is_stack_ptr should be true for an array like:
+ * char* cmd[];
+ * where the initial pointer is on the stack, but the pointers themselves
+ * are dynamically allocated.
  */
-void free_pointer_array(void** array, int array_size) {
+void free_pointer_array(void** array, int array_size, int is_stack_ptr) {
 	int i = 0;
 	for(; i < array_size; ++i) {
 		if(array[i] != NULL) {
 			free(array[i]);
 		}
 	}
-	free(array);
+	if(!is_stack_ptr) {
+		free(array);
+	}
 }
 
 /***** TESTS *******/
@@ -1085,7 +1114,7 @@ void test_free_pointer_array(void) {
 		test[i] = calloc(4, sizeof(char));
 		strncat(test[i],"two" ,4 );
 	}
-	free_pointer_array((void**)test, size);
+	free_pointer_array((void**)test, size, 0);
 	assert(1);
 }
 

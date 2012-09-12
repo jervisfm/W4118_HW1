@@ -127,6 +127,8 @@ char* get_full_path(const char* cmd);
 
 int run_list_history(void);
 
+int run_execute_history(const char *cmd[]);
+
 int run_path_cmd(const char* cmd[]);
 
 int is_absolute_path(const char* cmd);
@@ -135,7 +137,7 @@ char* const* get_params(const char* cmd[], int array_size, int* param_size);
 
 int run_shell(void);
 
-void free_pointer_array(void** array, int array_size);
+void free_pointer_array(void** array, int array_size, int is_stack_ptr);
 
 int should_exit(const char* cmd);
 
