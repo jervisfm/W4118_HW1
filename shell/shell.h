@@ -16,12 +16,13 @@ struct String {
 };
 
 struct StringList {
-	struct String* paths; /*Paths dynamic list*/
+	struct String* head; /*Head of dynamic list*/
 	int size; /*current number of elements*/
 };
 
 /* Stores the Search paths*/
 struct StringList PATH;
+struct StringList HISTORY;
 
 
 /**
@@ -73,12 +74,14 @@ void init(void);
 /* Initialize array structure that stores list of exec paths*/
 void initialize_path_list(void);
 
+void initialize_history_list(void);
+
 /*Adds a new string to path array*/
 void add_string_to_path_list(const char* string, struct StringList* arr);
 
 void remove_string_from_path_list(const char* string, struct StringList* list);
 
-void add_string_to_history_list(const char* string);
+void add_string_to_history_list(const char* string, struct StringList* list);
 
 /**
  * This parses the given line into separate string.

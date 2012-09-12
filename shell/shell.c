@@ -377,7 +377,7 @@ int run_path_cmd(const char* cmd[]) {
 				printf("\nPath list is currently empty\n");
 				return 1;
 			}
-			struct String* curr = PATH.paths;
+			struct String* curr = PATH.head;
 			for(; curr != NULL; curr = curr->next) {
 				printf("%s",curr->data);
 				if(curr->next != NULL) {
@@ -450,7 +450,7 @@ char* get_full_path(const char* cmd) {
 		 * suitable Path */
 		if(PATH.size > 0) {
 			free(full_path);
-			struct String* curr = PATH.paths;
+			struct String* curr = PATH.head;
 			for(; curr != NULL; curr = curr->next) {
 				curr_path = curr->data;
 				full_path = join_path(curr_path, cmd);
@@ -473,7 +473,11 @@ void init(void) {
 
 void initialize_path_list(void) {
 	PATH.size = 0;
-	PATH.paths = NULL;
+	PATH.head = NULL;
+}
+
+void initialize_history_list(void) {
+	HISTORY.size = 0;
 }
 
 
@@ -518,11 +522,11 @@ void add_string_to_path_list(const char* string, struct StringList* arr) {
 	/* insert new string into list */
 	if (size == 0) {
 		new_string->next = NULL;
-		arr->paths = new_string;
+		arr->head = new_string;
 
 	} else {
-		new_string->next = arr->paths;
-		arr->paths = new_string;
+		new_string->next = arr->head;
+		arr->head = new_string;
 	}
 	arr->size = new_size;
 }
@@ -532,7 +536,7 @@ void add_string_to_path_list(const char* string, struct StringList* arr) {
  */
 void remove_string_from_path_list(const char* string, struct StringList* list) {
 	int deleted = 0;
-	struct String* curr = list->paths;
+	struct String* curr = list->head;
 	struct String* first = curr;
 	struct String* prev = curr;
 
@@ -544,7 +548,7 @@ void remove_string_from_path_list(const char* string, struct StringList* list) {
 	 * of the list  */
 	if(strcmp(first->data, string) == 0) {
 		struct String* to_delete = first;
-		list->paths = first->next;
+		list->head = first->next;
 		list->size--;
 		/* free memory */
 		free(to_delete->data);
@@ -829,12 +833,12 @@ void test_add_string_to_path_list(void) {
 	add_string_to_path_list("two", &PATH);
 	add_string_to_path_list("three", &PATH);
 
-	assert(strcmp(PATH.paths->data, "three") == 0);
-	assert(PATH.paths->size == 6);
-	assert(strcmp(PATH.paths->next->data, "two") == 0);
-	assert(PATH.paths->next->size == 4);
-	assert(strcmp(PATH.paths->next->next->data, "one") == 0);
-	assert(PATH.paths->next->next->size == 4);
+	assert(strcmp(PATH.head->data, "three") == 0);
+	assert(PATH.head->size == 6);
+	assert(strcmp(PATH.head->next->data, "two") == 0);
+	assert(PATH.head->next->size == 4);
+	assert(strcmp(PATH.head->next->next->data, "one") == 0);
+	assert(PATH.head->next->next->size == 4);
 	assert(PATH.size == 3);
 }
 
@@ -846,10 +850,10 @@ void test_remove_string_from_path_list(void) {
 
 	remove_string_from_path_list("two", &PATH);
 
-	assert(strcmp(PATH.paths->data, "three") == 0);
-	assert(PATH.paths->size == 6);
-	assert(strcmp(PATH.paths->next->data, "one") == 0);
-	assert(PATH.paths->next->size == 4);
+	assert(strcmp(PATH.head->data, "three") == 0);
+	assert(PATH.head->size == 6);
+	assert(strcmp(PATH.head->next->data, "one") == 0);
+	assert(PATH.head->next->size == 4);
 	assert(PATH.size == 2);
 }
 
@@ -912,11 +916,11 @@ void test_run_path_cmd(void) {
 	run_path_cmd(test2);
 	run_path_cmd(test3);
 
-	assert(strcmp(PATH.paths->data, "THREE") == 0);
-	assert(strcmp(PATH.paths->next->data, "TWO") == 0);
-	assert(strcmp(PATH.paths->next->next->data, "ONE") == 0);
+	assert(strcmp(PATH.head->data, "THREE") == 0);
+	assert(strcmp(PATH.head->next->data, "TWO") == 0);
+	assert(strcmp(PATH.head->next->next->data, "ONE") == 0);
 	run_path_cmd(test4);
-	printf("\n\n%s\n", PATH.paths->next->data);
-	assert(strcmp(PATH.paths->data, "THREE") == 0);
-	assert(strcmp(PATH.paths->next->data, "ONE") == 0);
+	printf("\n\n%s\n", PATH.head->next->data);
+	assert(strcmp(PATH.head->data, "THREE") == 0);
+	assert(strcmp(PATH.head->next->data, "ONE") == 0);
 }
