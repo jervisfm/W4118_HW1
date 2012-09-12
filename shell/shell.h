@@ -135,6 +135,8 @@ int should_exit(const char* cmd);
 
 int run_change_directory(const char* cmd[]);
 
+char* combine_string_array(const char* cmd[], int array_size);
+
 /**
  * Tests
  */

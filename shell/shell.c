@@ -20,8 +20,8 @@ int test (int argc, char** argv)
 int main(int argc, char **argv)
 {
 	//test(argc, argv);
-	test_all();
-	//run_shell();
+	//test_all();
+	run_shell();
 	return 0;
 }
 
@@ -266,7 +266,9 @@ int run_command(const char* cmd[], int array_size) {
 	if(is_builtin_command(command)) {
 		return run_builtin_command(cmd);
 	}
-
+	//char* command_string = combine_string_array(cmd, array_size);
+	//add_string_to_history_list(command_string, &HISTORY);
+	//free(command_string);
 	int pid;
 	pid = fork();
 	if(pid < 0) { /* an error occured */
@@ -289,6 +291,20 @@ int run_command(const char* cmd[], int array_size) {
 	}
 	free_pointer_array((void**)params, param_size);
 	return 1;
+}
+
+char* combine_string_array(const char* cmd[], int array_size) {
+	char* output = calloc(1, sizeof(char));
+	int curr_size = 1;
+	int i = 0;
+	for(; i < array_size; ++i) {
+		int length = strlen(cmd[i]);
+		curr_size += length  + 1 + 1;
+		output = realloc(output, curr_size);
+		strncat(output, cmd[i], length);
+		strncat(output, " ", 1);
+	}
+	return output;
 }
 
 int should_exit(const char* cmd) {
