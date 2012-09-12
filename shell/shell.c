@@ -441,6 +441,28 @@ char* get_full_path(const char* cmd) {
 		}
 		char* full_path = join_path(curr_path, cmd);
 		free(curr_path);
+		/* Search the current directory first */
+		if(exists_file(full_path) && can_execute_file(full_path)) {
+			return full_path;
+		}
+
+		/* Otherwise Test all paths in PATH until we find a
+		 * suitable Path */
+		if(PATH.size > 0) {
+			free(full_path);
+			struct String* curr = PATH.paths;
+			for(; curr != NULL; curr = curr->next) {
+				curr_path = curr->data;
+				full_path = join_path(curr_path, cmd);
+				if(exists_file(full_path) &&
+				   can_execute_file(full_path)) {
+					return full_path;
+				}
+				free(full_path);
+			}
+		}
+		/* otherwise we return a non-existent file path based
+		 * on the current working directory */
 		return full_path;
 	}
 }
