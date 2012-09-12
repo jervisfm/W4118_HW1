@@ -297,15 +297,44 @@ int run_command(const char* cmd[], int array_size) {
  */
 void record_command_in_history(const char* cmd[], int array_size) {
 	/*
-	 * Only add the command to the history if it is not
-	 * a history command.
+	 * Only add the command to the history if it is an execute_history
+	 * command or another general command
 	 */
 	int cmd_type = get_command_type(cmd[0]);
-	if(cmd_type != list_history || cmd_type != execute_history) {
+	if(cmd_type == list_history ) {
+		/* don't add this to the history */
+	} else if(cmd_type == execute_history) {
+		/* Expand the command */
+		const char* cmd_number = &(cmd[0][1]);
+		int index = atoi(cmd_number);
+		struct String* old_cmd = get_string_at_index(&HISTORY, index);
+		if(old_cmd != NULL){
+			int len = strlen(old_cmd->data);
+			char* copy = calloc(len+1, sizeof(char));
+			strncat(copy, old_cmd->data, len);
+			add_string_to_history_list(copy, &HISTORY);
+		}
+	} else {
 		char* full_cmd_string = combine_string_array(cmd, array_size);
 		add_string_to_history_list(full_cmd_string , &HISTORY);
 		free(full_cmd_string);
 	}
+}
+
+/*
+ * Return the node at index 'index' or NULL if index does not exist.
+ *
+ */
+struct String* get_string_at_index(struct StringList* list, int index) {
+	struct String* curr = list->head;
+	int i = 0;
+	for(; curr != NULL; curr = curr->next) {
+		if(i == index) {
+			return curr;
+		}
+		++i;
+	}
+	return NULL;
 }
 
 /*
@@ -477,11 +506,11 @@ char* get_full_path(const char* cmd) {
 		char* full_path = join_path(curr_path, cmd);
 		free(curr_path);
 		/* Search the current directory first */
-		if(exists_file(full_path) && can_execute_file(full_path)) {
+		/* if(exists_file(full_path) && can_execute_file(full_path)) {
 			return full_path;
-		}
+		} */
 
-		/* Otherwise Test all paths in PATH until we find a
+		/* Test all paths in PATH until we find a
 		 * suitable Path */
 		if(PATH.size > 0) {
 			free(full_path);
@@ -496,9 +525,8 @@ char* get_full_path(const char* cmd) {
 				free(full_path);
 			}
 		}
-		/* otherwise we return a non-existent file path based
-		 * on the current working directory */
-		return full_path;
+		/* otherwise we return a non-existent NULL file path */
+		return NULL;
 	}
 }
 

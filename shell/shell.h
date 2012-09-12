@@ -84,6 +84,8 @@ void remove_string_from_path_list(const char* string, struct StringList* list);
 
 void add_string_to_history_list(const char* string, struct StringList* list);
 
+struct String* get_string_at_index(struct StringList* list, int index);
+
 void delete_head_from_list(struct StringList* list);
 
 /**
