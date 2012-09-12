@@ -20,8 +20,8 @@ int test (int argc, char** argv)
 int main(int argc, char **argv)
 {
 	//test(argc, argv);
-	//test_all();
-	run_shell();
+	test_all();
+	//run_shell();
 	return 0;
 }
 
@@ -524,16 +524,20 @@ void add_string_to_history_list(const char* string, struct StringList* list) {
 	strncpy(copy, string, string_size + 1);
 	new_string->data = copy;
 	new_string->size = string_size + 1;
+	new_string->next = NULL;
 	/* insert new string into list */
 	if(size == 0) {
 		new_string->next = NULL;
 		list->head = new_string;
-	}
-	struct String* curr =  list->head;
-	for(; curr != NULL; curr = curr->next) {
-		if(curr->next == NULL) { /* reached end of list */
-			/* Let's add the new element here */
-			curr->next = new_string;
+
+	} else { /* add element at the end of the list */
+		struct String* curr = list->head;
+		for(; curr != NULL; curr = curr->next) {
+			if(curr->next == NULL) { /* reached end of list */
+				/* Let's add the new element here */
+				curr->next = new_string;
+				break;
+			}
 		}
 	}
 	list->size = new_size;
@@ -785,6 +789,8 @@ void free_pointer_array(void** array, int array_size) {
 
 /***** TESTS *******/
 void test_all(void) {
+	printf("Running Tests...\n");
+	test_add_string_to_history_list();
 	test_run_path_cmd();
 	test_free_pointer_array();
 	test_get_full_path();
@@ -934,6 +940,7 @@ void test_is_absolute_path(void) {
 }
 
 void test_get_full_path(void) {
+	init();
 	char dir[] = "/tmp";
 	char path1[] = "ls";
 	char expected1[] = "/tmp/ls";
@@ -995,5 +1002,26 @@ void test_run_path_cmd(void) {
 }
 
 void test_add_string_to_history_list(void) {
-//
+	init();
+	char test[5];
+	const int REPEAT = 200;
+	const int HISTORY_SIZE = 100;
+	int i = 0;
+	printf("got here 1\n");
+
+	for(; i < REPEAT; ++i){
+		snprintf(test, 4, "%d", i);
+		add_string_to_history_list((const char*)test, &HISTORY);
+	}
+	printf("got here 3\n");
+
+	/*verify results */
+	assert(HISTORY.size == 100);
+	struct String* curr = HISTORY.head;
+	int counter = 100;
+	for(i = 0; i < HISTORY_SIZE; ++i, ++counter) {
+		snprintf(test, 4, "%d", counter);
+		assert(strcmp(curr->data, test) == 0);
+		curr = curr->next;
+	}
 }
