@@ -20,8 +20,8 @@ int test (int argc, char** argv)
 int main(int argc, char **argv)
 {
 	//test(argc, argv);
-	test_all();
-	//run_shell();
+	//test_all();
+	run_shell();
 	return 0;
 }
 
@@ -311,6 +311,7 @@ int run_builtin_command(const char* cmd[]) {
 			break;
 		}
 		case path: {
+			run_path_cmd(cmd);
 			break;
 		}
 		case list_history: {
@@ -371,6 +372,10 @@ int run_path_cmd(const char* cmd[]) {
 			break;
 		}
 		default: { /* print all paths */
+			if(PATH.size == 0) {
+				printf("\nPath list is currently empty\n");
+				return 1;
+			}
 			struct String* curr = PATH.paths;
 			for(; curr != NULL; curr = curr->next) {
 				printf("%s",curr->data);
