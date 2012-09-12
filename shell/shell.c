@@ -498,7 +498,7 @@ int is_absolute_path(const char* cmd) {
 	return 0;
 }
 
-void add_string_to_path_list(const char* string, struct Paths* arr) {
+void add_string_to_path_list(const char* string, struct StringList* arr) {
 	int size = arr->size;
 	int new_size = size + 1;
 
@@ -530,7 +530,7 @@ void add_string_to_path_list(const char* string, struct Paths* arr) {
 /**
  * Removes the given string from the specified Path list
  */
-void remove_string_from_path_list(const char* string, struct Paths* list) {
+void remove_string_from_path_list(const char* string, struct StringList* list) {
 	int deleted = 0;
 	struct String* curr = list->paths;
 	struct String* first = curr;

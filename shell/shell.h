@@ -15,13 +15,14 @@ struct String {
 	struct String* next; /*Next list item*/
 };
 
-struct Paths {
+struct StringList {
 	struct String* paths; /*Paths dynamic list*/
 	int size; /*current number of elements*/
 };
 
 /* Stores the Search paths*/
-struct Paths PATH;
+struct StringList PATH;
+
 
 /**
  * The maximum number of arguments that can be input
@@ -73,9 +74,11 @@ void init(void);
 void initialize_path_list(void);
 
 /*Adds a new string to path array*/
-void add_string_to_path_list(const char* string, struct Paths* arr);
+void add_string_to_path_list(const char* string, struct StringList* arr);
 
-void remove_string_from_path_list(const char* string, struct Paths* list);
+void remove_string_from_path_list(const char* string, struct StringList* list);
+
+void add_string_to_history_list(const char* string);
 
 /**
  * This parses the given line into separate string.
