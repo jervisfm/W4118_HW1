@@ -35,9 +35,9 @@ int run_shell(void) {
 	while(1) {
 		print_prompt();
 		char* user_input = read_line();
-		char* parsed[MAXIMUM_ARGUMENTS];
-		parse_line(user_input, parsed, MAXIMUM_ARGUMENTS);
-		run_command((const char**)parsed, MAXIMUM_ARGUMENTS);
+		char* parsed[MAX_ARGUMENTS];
+		parse_line(user_input, parsed, MAX_ARGUMENTS);
+		run_command((const char**)parsed, MAX_ARGUMENTS);
 		free(user_input);
 	}
 }
@@ -94,7 +94,7 @@ void parse_line(const char* line, char* parsed[], const int size)
 {
 	int buffer_size = get_maximum_string(line) + 1;
 	/* printf("Max Buffer : %d\n", buffer_size); */
-	initialize_string_array(parsed, buffer_size, MAXIMUM_ARGUMENTS);
+	initialize_string_array(parsed, buffer_size, MAX_ARGUMENTS);
 	int string_no = 0;
 
 	int char_idx = 0;
@@ -113,9 +113,9 @@ void parse_line(const char* line, char* parsed[], const int size)
 		}
 
 
-		if(string_no >= MAXIMUM_ARGUMENTS) {
+		if(string_no >= MAX_ARGUMENTS) {
 			printf("Only considering %d arguments\n",
-				MAXIMUM_ARGUMENTS - 1);
+				MAX_ARGUMENTS - 1);
 			break;
 		}
 
@@ -469,6 +469,7 @@ char* get_full_path(const char* cmd) {
 
 void init(void) {
 	initialize_path_list();
+	initialize_history_list();
 }
 
 void initialize_path_list(void) {
@@ -478,6 +479,7 @@ void initialize_path_list(void) {
 
 void initialize_history_list(void) {
 	HISTORY.size = 0;
+	HISTORY.head = NULL;
 }
 
 
@@ -502,8 +504,54 @@ int is_absolute_path(const char* cmd) {
 	return 0;
 }
 
-void add_string_to_path_list(const char* string, struct StringList* arr) {
-	int size = arr->size;
+/*
+ * Adds the given command to the history list.
+ * The item is inserted at the END of the list.
+ */
+void add_string_to_history_list(const char* string, struct StringList* list) {
+	int size = list->size;
+	int new_size = size + 1;
+
+	/* make new string structure with copy of data */
+	struct String* new_string = calloc(1, sizeof(struct String));
+	check_allocated_mem("add_string_history_list", new_string);
+
+	int string_size = strlen(string);
+	char* copy = calloc(string_size + 1, sizeof(char));
+	check_allocated_mem("add_string_history_list", new_string);
+
+	/* use string_size + 1 so that copy is auto null - termianted */
+	strncpy(copy, string, string_size + 1);
+	new_string->data = copy;
+	new_string->size = string_size + 1;
+	/* insert new string into list */
+	if(size == 0) {
+		new_string->next = NULL;
+		list->head = new_string;
+	}
+	struct String* curr =  list->head;
+	for(; curr != NULL; curr = curr->next) {
+		if(curr->next == NULL) { /* reached end of list */
+			/* Let's add the new element here */
+			curr->next = new_string;
+		}
+	}
+	list->size = new_size;
+
+	/* Ensure that we keep track of only MAX_HISTORY_ITEMS */
+	if(list->size > MAX_HISTORY_ITEMS && MAX_HISTORY_ITEMS > 0 ) {
+		/* Let's remove the first front item */
+		delete_head_from_list(list);
+	}
+}
+
+/**
+ * Adds the given path string to the given String List.
+ * The path is inserted at the front of the list so that this is an
+ * O(1) constant time operation
+ */
+void add_string_to_path_list(const char* string, struct StringList* list) {
+	int size = list->size;
 	int new_size = size + 1;
 
 	/* make new string strcuture with data*/
@@ -522,13 +570,34 @@ void add_string_to_path_list(const char* string, struct StringList* arr) {
 	/* insert new string into list */
 	if (size == 0) {
 		new_string->next = NULL;
-		arr->head = new_string;
+		list->head = new_string;
 
 	} else {
-		new_string->next = arr->head;
-		arr->head = new_string;
+		new_string->next = list->head;
+		list->head = new_string;
 	}
-	arr->size = new_size;
+	list->size = new_size;
+}
+
+/**
+ * Delete the first item in the linked list (i.e. the HEAD)
+ */
+void delete_head_from_list(struct StringList* list) {
+	int size = list->size;
+	if(size == 0) {
+		return;
+	} else if(size == 1) {
+		free(list->head->data);
+		free(list->head);
+		list->head = NULL;
+		list->size--;
+	} else { /* have at least 2 elements */
+		struct String* to_delete =  list->head;
+		list->head = list->head->next;
+		free(to_delete->data);
+		free(to_delete);
+		list->size--;
+	}
 }
 
 /**
@@ -775,8 +844,8 @@ void test_parse_line(void) {
 	char test[] = "This is a test string 6 7 8 9 10 11 12";
 	//char test2[] = "One Two Three Four Five Six Seven Eight Nine Ten Elven";
 
-	char* parsed[MAXIMUM_ARGUMENTS];
-	parse_line(test, parsed, MAXIMUM_ARGUMENTS);
+	char* parsed[MAX_ARGUMENTS];
+	parse_line(test, parsed, MAX_ARGUMENTS);
 	//parse_line(test2,parsed, MAXIMUM_ARGUMENTS);
 	/* test */
 	assert(strcasecmp(parsed[0], "This") == 0);
@@ -923,4 +992,8 @@ void test_run_path_cmd(void) {
 	printf("\n\n%s\n", PATH.head->next->data);
 	assert(strcmp(PATH.head->data, "THREE") == 0);
 	assert(strcmp(PATH.head->next->data, "ONE") == 0);
+}
+
+void test_add_string_to_history_list(void) {
+//
 }

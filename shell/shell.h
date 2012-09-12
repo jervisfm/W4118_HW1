@@ -31,7 +31,8 @@ struct StringList HISTORY;
  * Thus, if set to 11, the actual maximum arguments possible is
  * 10.
  */
-#define MAXIMUM_ARGUMENTS 11
+#define MAX_ARGUMENTS 11
+#define MAX_HISTORY_ITEMS 100
 
 /**
  * Reading - we count this character as being part of the string
@@ -82,6 +83,8 @@ void add_string_to_path_list(const char* string, struct StringList* arr);
 void remove_string_from_path_list(const char* string, struct StringList* list);
 
 void add_string_to_history_list(const char* string, struct StringList* list);
+
+void delete_head_from_list(struct StringList* list);
 
 /**
  * This parses the given line into separate string.
@@ -152,5 +155,6 @@ void test_get_full_path(void);
 void test_execv(void);
 void test_free_pointer_array(void);
 void test_run_path_cmd(void);
+void test_add_string_to_history_list(void);
 
 #endif /* SHELL_H_ */
