@@ -20,8 +20,8 @@ int test (int argc, char** argv)
 int main(int argc, char **argv)
 {
 	//test(argc, argv);
-	//test_all();
-	run_shell();
+	test_all();
+	//run_shell();
 	return 0;
 }
 
@@ -31,6 +31,7 @@ int main(int argc, char **argv)
  * commands builtin. Type exit to quit and close the shell.
  */
 int run_shell(void) {
+	init();
 	while(1) {
 		print_prompt();
 		char* user_input = read_line();
@@ -341,15 +342,50 @@ int run_execute_history(const char* cmd) {
 	return -1;
 }
 
-/*Runs the PATH builtin command */
-int run_path_cmd(const char* cmd) {
-	/* to be completed */
-	return -1;
+/*Runs the PATH builtin command
+ *
+ * path + [NEW_PATH] : this adds a new path to path search list
+ * path - [NEW_PATH] : this removes the given path from the search list
+ * path : this displays all currently stored paths separated by a ':'
+ *
+ */
+int run_path_cmd(const char* cmd[]) {
+	char key = *cmd[1];
+	switch (key) {
+		case '+':{ /* add a new path to the list */
+			const char* new_path = cmd[2];
+			if(new_path == NULL || strcmp(new_path,"") == 0) {
+				print_error("Please provide a non-empty path");
+				return 0;
+			}
+			add_string_to_path_list(new_path, &PATH);
+			break;
+		}
+		case '-': { /* remove path from the list */
+			const char* new_path = cmd[2];
+			if(new_path == NULL || strcmp(new_path,"") == 0) {
+				print_error("Please provide a non-empty path");
+				return 0;
+			}
+			remove_string_from_path_list(new_path, &PATH);
+			break;
+		}
+		default: { /* print all paths */
+			struct String* curr = PATH.paths;
+			for(; curr != NULL; curr = curr->next) {
+				printf("%s",curr->data);
+				if(curr->next != NULL) {
+					printf(":");
+				}
+			}
+			break;
+		}
+	}
+	return 1;
 }
 
 /* Runs the change directory command */
 int run_change_directory(const char* cmd[]) {
-	/* to be completed */
 	int ret;
 	if(strcmp(cmd[1], "") == 0) { /* No params given*/
 		/*
@@ -627,6 +663,7 @@ void free_pointer_array(void** array, int array_size) {
 
 /***** TESTS *******/
 void test_all(void) {
+	test_run_path_cmd();
 	test_free_pointer_array();
 	test_get_full_path();
 	test_is_absolute_path();
@@ -815,4 +852,22 @@ void test_free_pointer_array(void) {
 	}
 	free_pointer_array((void**)test, size);
 	assert(1);
+}
+
+void test_run_path_cmd(void) {
+	const char* test1[] = {"path", "+", "ONE"};
+	const char* test2[] = {"path", "+","TWO"};
+	const char* test3[] = {"path", "+", "THREE"};
+	const char* test4[] = {"path", "-","TWO"};
+	run_path_cmd(test1);
+	run_path_cmd(test2);
+	run_path_cmd(test3);
+
+	assert(strcmp(PATH.paths->data, "THREE") == 0);
+	assert(strcmp(PATH.paths->next->data, "TWO") == 0);
+	assert(strcmp(PATH.paths->next->next->data, "ONE") == 0);
+	run_path_cmd(test4);
+	printf("\n\n%s\n", PATH.paths->next->data);
+	assert(strcmp(PATH.paths->data, "THREE") == 0);
+	assert(strcmp(PATH.paths->next->data, "ONE") == 0);
 }

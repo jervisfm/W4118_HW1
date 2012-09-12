@@ -112,7 +112,7 @@ char* get_full_path(const char* cmd);
 
 int run_list_history(void);
 
-int run_path_cmd(const char* cmd);
+int run_path_cmd(const char* cmd[]);
 
 int is_absolute_path(const char* cmd);
 
@@ -145,5 +145,6 @@ void test_is_absolute_path(void);
 void test_get_full_path(void);
 void test_execv(void);
 void test_free_pointer_array(void);
+void test_run_path_cmd(void);
 
 #endif /* SHELL_H_ */
