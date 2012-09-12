@@ -20,8 +20,8 @@ int test (int argc, char** argv)
 int main(int argc, char **argv)
 {
 	//test(argc, argv);
-	//test_all();
-	run_shell();
+	test_all();
+	//run_shell();
 	return 0;
 }
 
@@ -299,7 +299,7 @@ char* combine_string_array(const char* cmd[], int array_size) {
 	int i = 0;
 	for(; i < array_size; ++i) {
 		int length = strlen(cmd[i]);
-		curr_size += length  + 1 + 1;
+		curr_size += length + 1 + 1;/*count the Null char & space */
 		output = realloc(output, curr_size);
 		strncat(output, cmd[i], length);
 		strncat(output, " ", 1);
@@ -806,6 +806,7 @@ void free_pointer_array(void** array, int array_size) {
 /***** TESTS *******/
 void test_all(void) {
 	printf("Running Tests...\n");
+	test_combine_string_array();
 	test_add_string_to_history_list();
 	test_run_path_cmd();
 	test_free_pointer_array();
@@ -1040,4 +1041,12 @@ void test_add_string_to_history_list(void) {
 		assert(strcmp(curr->data, test) == 0);
 		curr = curr->next;
 	}
+}
+void test_combine_string_array(void) {
+	const char* test[] = {"one", "two", "three"};
+	int size  = 3;
+	char expected[] = "one two three ";
+	char* combined = combine_string_array(test,size);
+	printf("\nGot:%s", combined);
+	assert(strcmp(combined, expected) == 0);
 }

@@ -158,5 +158,6 @@ void test_execv(void);
 void test_free_pointer_array(void);
 void test_run_path_cmd(void);
 void test_add_string_to_history_list(void);
+void test_combine_string_array(void);
 
 #endif /* SHELL_H_ */
