@@ -536,6 +536,10 @@ void remove_string_from_path_list(const char* string, struct StringList* list) {
 	struct String* first = curr;
 	struct String* prev = curr;
 
+	if(list->size == 0) {
+		print_error("Cannot remove from PATH - Item not found");
+		return;
+	}
 	/* Handle special case when item to be removed is at the head
 	 * of the list  */
 	if(strcmp(first->data, string) == 0) {
@@ -547,6 +551,7 @@ void remove_string_from_path_list(const char* string, struct StringList* list) {
 		free(to_delete);
 		return;
 	}
+
 
 	prev = first;
 	for(; curr != NULL; curr = curr->next) {
