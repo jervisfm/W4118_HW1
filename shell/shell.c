@@ -535,6 +535,10 @@ char* get_full_path(const char* cmd) {
 			}
 		}
 		free(curr_dir);
+		if(full_path == NULL) {
+			full_path =  calloc(2, sizeof(char));
+			full_path[0] = ' ';
+		}
 		return full_path;
 	}
 }
@@ -1026,15 +1030,18 @@ void test_is_absolute_path(void) {
 
 void test_get_full_path(void) {
 	init();
-	char dir[] = "/tmp";
+	add_string_to_path_list(".", &PATH);
+	char dir[] = "/bin";
 	char path1[] = "ls";
-	char expected1[] = "/tmp/ls";
+	char expected1[] = "/bin/./ls";
 
-	char path2[] = "/abs/ls";
-	char expected2[] = "/abs/ls";
+	char path2[] = "/bin/du";
+	char expected2[] = "/bin/du";
 	chdir(dir);
-	assert(strcmp(get_full_path(path1),expected1) == 0);
-	assert(strcmp(get_full_path(path2), expected2) == 0);
+	char* result1 = get_full_path(path1);
+	char* result2 = get_full_path(path2);
+	assert(strcmp(result1,expected1) == 0);
+	assert(strcmp(result2, expected2) == 0);
 }
 
 void test_execv(void) {
