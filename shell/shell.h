@@ -80,13 +80,17 @@ void initialize_history_list(void);
 /*Adds a new string to path array*/
 void add_string_to_path_list(const char* string, struct StringList* arr);
 
-void remove_string_from_path_list(const char* string, struct StringList* list);
+int remove_string_from_path_list(const char* string, struct StringList* list);
 
 void add_string_to_history_list(const char* string, struct StringList* list);
 
 struct String* get_string_at_index(struct StringList* list, int index);
 
 void delete_head_from_list(struct StringList* list);
+
+void remove_all_string_from_path_list(const char* string,
+				      struct StringList* list);
+
 
 /**
  * This parses the given line into separate string.

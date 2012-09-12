@@ -677,9 +677,19 @@ void delete_head_from_list(struct StringList* list) {
 }
 
 /**
- * Removes the given string from the specified Path list
+ * Removes all copies of string from the path list
  */
-void remove_string_from_path_list(const char* string, struct StringList* list) {
+void remove_all_string_from_path_list(const char* string,
+				      struct StringList* list) {
+	/* remove all copies of string*/
+	while(remove_string_from_path_list(string, list) != 0);
+}
+
+/**
+ * Removes the given string from the specified Path list
+ * Returns 0 on failure and 1 on successful removal of element.
+ */
+int remove_string_from_path_list(const char* string, struct StringList* list) {
 	int deleted = 0;
 	struct String* curr = list->head;
 	struct String* first = curr;
@@ -687,7 +697,7 @@ void remove_string_from_path_list(const char* string, struct StringList* list) {
 
 	if(list->size == 0) {
 		print_error("Cannot remove from PATH - Item not found");
-		return;
+		return 0;
 	}
 	/* Handle special case when item to be removed is at the head
 	 * of the list  */
@@ -698,7 +708,7 @@ void remove_string_from_path_list(const char* string, struct StringList* list) {
 		/* free memory */
 		free(to_delete->data);
 		free(to_delete);
-		return;
+		return 1;
 	}
 
 
@@ -717,8 +727,10 @@ void remove_string_from_path_list(const char* string, struct StringList* list) {
 	}
 	if(!deleted) {
 		print_error("Cannot remove from PATH - Item not found");
+		return 0;
 	} else {
 		printf("Removed %s from PATH", string);
+		return 1;
 	}
 }
 
