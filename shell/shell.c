@@ -360,6 +360,7 @@ int run_path_cmd(const char* cmd[]) {
 				return 0;
 			}
 			add_string_to_path_list(new_path, &PATH);
+			printf("Added new path: %s\n", new_path);
 			break;
 		}
 		case '-': { /* remove path from the list */
@@ -508,24 +509,40 @@ void add_string_to_path_list(const char* string, struct Paths* arr) {
  * Removes the given string from the specified Path list
  */
 void remove_string_from_path_list(const char* string, struct Paths* list) {
+	int deleted = 0;
 	struct String* curr = list->paths;
+	struct String* first = curr;
 	struct String* prev = curr;
-	int first_run = 1;
-	for(; curr != NULL; curr = curr->next) {
 
+	/* Handle special case when item to be removed is at the head
+	 * of the list  */
+	if(strcmp(first->data, string) == 0) {
+		struct String* to_delete = first;
+		list->paths = first->next;
+		list->size--;
+		/* free memory */
+		free(to_delete->data);
+		free(to_delete);
+		return;
+	}
+
+	prev = first;
+	for(; curr != NULL; curr = curr->next) {
 		if(strcmp(curr->data, string) == 0 ) {/* found node to remove*/
 			prev->next = curr->next;
 			list->size--;
+			free(curr->data);
 			free(curr);
+			deleted = 1;
 			break;
 		}
-
 		/*keep track of previous node */
-		if(!first_run) {
-			prev = curr;
-		} else {
-			first_run = 0;
-		}
+		prev = curr;
+	}
+	if(!deleted) {
+		print_error("Cannot remove from PATH - Item not found");
+	} else {
+		printf("Removed %s from PATH", string);
 	}
 }
 
