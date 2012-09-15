@@ -269,7 +269,7 @@ int run_command(const char* cmd[], int array_size) {
 	const char* command = cmd[0];
 	char * const * params = get_params(cmd, array_size, &param_size);
 
-	if(is_empty_command(cmd)) {
+	if(is_empty_command(cmd[0])) {
 		return 1;
 	}
 	if(should_exit(command)) {
