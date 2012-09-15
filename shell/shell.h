@@ -149,6 +149,10 @@ char* combine_string_array(const char* cmd[], int array_size);
 
 void remove_trailing_whitespace(char* string);
 
+void remove_leading_whitespace(char* string);
+
+void trim_whitespace(char* string);
+
 void record_command_in_history(const char* cmd[], int array_size);
 
 int is_empty_command(const char* cmd);

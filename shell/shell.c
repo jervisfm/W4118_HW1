@@ -29,8 +29,8 @@ int test (int argc, char** argv)
 int main(int argc, char **argv)
 {
 	//test(argc, argv);
-	//test_all();
-	run_shell();
+	test_all();
+	//run_shell();
 	return 0;
 }
 
@@ -397,6 +397,48 @@ void remove_trailing_whitespace(char* string) {
 	for(; isspace(string[i]); --i) {
 		string[i] = '\0';
 	}
+}
+
+/**
+ * Removes both trailing and leading whitespace in given
+ * string
+ */
+void trim_whitespace(char* string) {
+	remove_trailing_whitespace(string);
+	remove_leading_whitespace(string);
+}
+
+
+/*
+ * Removes the leading white space in given string
+ */
+void remove_leading_whitespace(char* string) {
+	/* find first non-whitespace character index */
+	int non_ws_char_idx = 0;
+	int i = 0;
+	for (; string[i] != '\0'; ++i) {
+		if(!isspace(string[i])) {
+			non_ws_char_idx = i;
+			break;
+		}
+	}
+
+	if(non_ws_char_idx == 0) { /* there is no leading whitespace */
+		return;
+	}
+
+	/*Copy over the character buffer
+	 * char buffer:  '    abcdefg'
+	 *      index:    i   j
+	 */
+	i = 0;
+	int j = non_ws_char_idx;
+	for(; string[j] != '\0'; ++j, ++i) {
+		string[i] = string[j];
+	}
+
+	/*Copy over null character */
+	string[i] = '\0';
 }
 
 int should_exit(const char* cmd) {
@@ -1203,7 +1245,7 @@ void test_add_string_to_history_list(void) {
 void test_combine_string_array(void) {
 	const char* test[] = {"one", "two", "three"};
 	int size  = 3;
-	char expected[] = "one two three ";
+	char expected[] = "one two three";
 	char* combined = combine_string_array(test,size);
 	printf("\nGot:%s", combined);
 	assert(strcmp(combined, expected) == 0);
