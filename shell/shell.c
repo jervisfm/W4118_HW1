@@ -113,8 +113,8 @@ void parse_line(const char *line, char *parsed[], const int size)
 
 
 		if (string_no >= MAX_ARGUMENTS) {
-			printf("Only considering %d arguments\n", MAX_ARGUMENTS
-					- 1);
+			printf("Only considering %d arguments\n",
+			       MAX_ARGUMENTS - 1);
 			break;
 		}
 
@@ -214,15 +214,15 @@ int is_builtin_command(const char *cmd)
 {
 	int cmd_type = get_command_type(cmd);
 	switch (cmd_type) {
-	case cd:
-	case path:
-	case list_history:
-	case execute_history:
-		return 1;
-		break;
-	default:
-		return 0;
-		break;
+		case cd:
+		case path:
+		case list_history:
+		case execute_history:
+			return 1;
+			break;
+		default:
+			return 0;
+			break;
 	}
 	return 0;
 }
@@ -246,6 +246,11 @@ char * const *get_params(const char *cmd[], int array_size, int *param_size)
 	/* Duplicate given command with its parameters
 	 * but leave space for one extra NULL element at the end*/
 	char **copy = calloc(array_size + 1, sizeof(char *));
+	if (copy == NULL) {
+		print_error("Memory allocation failed in " \
+			    "get_params");
+		exit(EXIT_FAILURE);
+	}
 	copy[array_size] = NULL;
 	int i = 0;
 	*param_size = 0;
@@ -334,6 +339,7 @@ void record_command_in_history(const char *cmd[], int array_size)
 		if (old_cmd != NULL) {
 			int len = strlen(old_cmd->data);
 			char *copy = calloc(len + 1, sizeof(char));
+			check_allocated_mem("record_history", (void *) copy);
 			strncat(copy, old_cmd->data, len);
 			add_string_to_history_list(copy, &HISTORY);
 		}
@@ -374,6 +380,7 @@ char *combine_string_array(const char *cmd[], int array_size)
 		int length = strlen(cmd[i]);
 		curr_size += length + 1 + 1;/*count the Null char & space */
 		output = realloc(output, curr_size);
+		check_allocated_mem("combine_string_array", (void *) output);
 		strncat(output, cmd[i], length);
 		strncat(output, " ", 1);
 	}
@@ -637,8 +644,8 @@ char *get_full_path(const char *cmd)
 					full_path = join_path(temp, cmd);
 					free(temp);
 				}
-				if (exists_file(full_path) && can_execute_file(
-						full_path)) {
+				if (exists_file(full_path) &&
+				    can_execute_file(full_path)) {
 					break;
 				}
 				free(full_path);
@@ -647,6 +654,7 @@ char *get_full_path(const char *cmd)
 		free(curr_dir);
 		if (full_path == NULL) {
 			full_path = calloc(2, sizeof(char));
+			check_allocated_mem("get_fullpath", (void *) full_path);
 			full_path[0] = ' ';
 		}
 		return full_path;
@@ -804,8 +812,7 @@ void remove_all_string_from_path_list(const char *string,
 		struct StringList *list)
 {
 	/* remove all copies of string*/
-	while (remove_string_from_path_list(string, list) != 0)
-		;
+	while (remove_string_from_path_list(string, list) != 0);
 }
 
 /**
