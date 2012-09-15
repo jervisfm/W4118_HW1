@@ -693,10 +693,16 @@ int is_absolute_path(const char *cmd)
 			continue;
 
 
-		if (cmd[i] == '/')
+		/* An absolute path has '/' character in index 0
+		 * like in '/bin/ls' or in index 1 as in './ls'
+		 */
+		if (cmd[i] == '/') {
 			return 1;
-		else
+		} else if(cmd[i] == '.' && cmd[i+1] == '/') {
+			return 1;
+		} else {
 			return 0;
+		}
 
 	}
 	return 0;
