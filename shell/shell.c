@@ -211,7 +211,7 @@ int get_maximum_string(const char* line) {
 }
 
 void print_prompt() {
-	printf("\n$ ");
+	printf("$ ");
 }
 
 void print_error(const char* err) {
@@ -275,11 +275,12 @@ int run_command(const char* cmd[], int array_size) {
 	if(should_exit(command)) {
 		exit(EXIT_SUCCESS);
 	}
+	/* we record both builtin commands and external commands */
+	record_command_in_history(cmd, array_size);
+
 	if(is_builtin_command(command)) {
-		record_command_in_history(cmd, array_size);
 		return run_builtin_command(cmd);
 	}
-	record_command_in_history(cmd, array_size);
 
 	int pid;
 	pid = fork();
