@@ -535,6 +535,7 @@ int run_execute_history(const char *cmd[])
 		char *data = full_command->data;
 		parse_line(data, parsed, MAX_ARGUMENTS);
 		run_command((const char **) parsed, MAX_ARGUMENTS);
+		free_pointer_array((void **) parsed, MAX_ARGUMENTS, 1);
 	}
 
 	return 1;
