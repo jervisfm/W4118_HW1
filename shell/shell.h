@@ -47,10 +47,6 @@ enum ParseMode {
 enum CommandType {
 	cd, path, list_history, execute_history, external_command
 };
-char* BUILTIN_COMMANDS[] = {"cd", "path", "history"};
-
-
-int test_print(void);
 
 /*
  * Reads from standard input.
@@ -156,29 +152,5 @@ void trim_whitespace(char* string);
 void record_command_in_history(const char* cmd[], int array_size);
 
 int is_empty_command(const char* cmd);
-
-/**
- * Tests
- */
-void test_all(void);
-void test_get_maximum_string(void);
-void test_read_line(void);
-void test_parse_line(void);
-void test_initialize_string_array(void);
-void test_is_builtin_command(void);
-void test_can_execute_file(void);
-void test_exists_file(void);
-void test_join_path(void);
-void test_get_first_path_index(void);
-void test_add_string_to_path_list(void);
-void test_remove_string_from_path_list(void);
-void test_is_absolute_path(void);
-void test_get_full_path(void);
-void test_execv(void);
-void test_free_pointer_array(void);
-void test_run_path_cmd(void);
-void test_add_string_to_history_list(void);
-void test_combine_string_array(void);
-void test_trim(void);
 
 #endif /* SHELL_H_ */
