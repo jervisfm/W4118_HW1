@@ -398,7 +398,7 @@ void remove_trailing_whitespace(char *string)
 {
 	int length = strlen(string);
 	int i = length - 1;
-	for (; isspace(string[i]); --i) {
+	for (; i > 0 && isspace(string[i]); --i) {
 		string[i] = '\0';
 	}
 }
