@@ -491,7 +491,7 @@ int run_list_history(void)
 {
 	/* To be implemented*/
 	struct String *curr = HISTORY.head;
-	int i = 0;
+	int i = 1;
 	for (; curr != NULL; curr = curr->next) {
 		if (curr->data) {
 			printf("[%d] %s\n", i++, curr->data);
@@ -512,7 +512,7 @@ int run_execute_history(const char *cmd[])
 	 * where n is a integer number
 	 */
 	const char *n = &cmd[0][1];
-	int index = atoi(n);
+	int index = atoi(n) - 1;
 	struct String *full_command = get_string_at_index(&HISTORY, index);
 	if (full_command == NULL) { /* history index does not exist */
 		print_error("History command index not found");
