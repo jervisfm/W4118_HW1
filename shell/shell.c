@@ -222,10 +222,17 @@ void print_error(const char* err) {
 /* Checks if given command is a builtin command.
  * Returns 1 if true and 0 if false. */
 int is_builtin_command(const char* cmd) {
-	int i = 0;
-	for(i = 0; i < BUILTIN_COMMANDS_SIZE; ++i) {
-		if(strcmp(BUILTIN_COMMANDS[i], cmd) == 0)
+	int cmd_type = get_command_type(cmd);
+	switch (cmd_type) {
+		case cd:
+		case path:
+		case list_history:
+		case execute_history:
 			return 1;
+			break;
+		default:
+			return 0;
+			break;
 	}
 	return 0;
 }
@@ -374,7 +381,22 @@ char* combine_string_array(const char* cmd[], int array_size) {
 		strncat(output, cmd[i], length);
 		strncat(output, " ", 1);
 	}
+	/* we need to remove leading whitespace. This is added
+	 * when the actual number of parameters in cmd is less than
+	 * array_szie  */
+	remove_trailing_whitespace(output);
 	return output;
+}
+
+/**
+ * Removes trailing white space in the given string.
+ */
+void remove_trailing_whitespace(char* string) {
+	int length = strlen(string);
+	int i = length - 1;
+	for(; isspace(string[i]); --i) {
+		string[i] = '\0';
+	}
 }
 
 int should_exit(const char* cmd) {
@@ -405,6 +427,7 @@ int run_builtin_command(const char* cmd[]) {
 			break;
 		}
 		case execute_history: {
+			run_execute_history(cmd);
 			break;
 		}
 		default:
