@@ -34,7 +34,8 @@ int test (int argc, char** argv)
  * This is a simple shell that can has ls path and history
  * commands builtin. Type exit to quit and close the shell.
  */
-int run_shell(void) {
+int run_shell(void)
+{
 	init();
 	while(1) {
 		print_prompt();
@@ -157,7 +158,8 @@ void parse_line(const char* line, char* parsed[], const int size)
  *
  * Note that pass by value is Okay since the array elements are pointers.
  */
-void initialize_string_array(char* array[], int buffer_size, int array_size) {
+void initialize_string_array(char* array[], int buffer_size, int array_size)
+{
 	int i = 0;
 	for(i = 0; i < array_size; ++i) {
 		array[i] = (char*) calloc(buffer_size, sizeof(char));
@@ -169,7 +171,8 @@ void initialize_string_array(char* array[], int buffer_size, int array_size) {
 	}
 }
 
-int get_maximum_string(const char* line) {
+int get_maximum_string(const char* line)
+{
 	int i = 0;
 	int max = 0;
 	int size = 0;
@@ -207,17 +210,20 @@ int get_maximum_string(const char* line) {
 	return max;
 }
 
-void print_prompt() {
+void print_prompt()
+{
 	printf("$ ");
 }
 
-void print_error(const char* err) {
+void print_error(const char* err)
+{
 	printf("error: %s\n", err);
 }
 
 /* Checks if given command is a builtin command.
  * Returns 1 if true and 0 if false. */
-int is_builtin_command(const char* cmd) {
+int is_builtin_command(const char* cmd)
+{
 	int cmd_type = get_command_type(cmd);
 	switch (cmd_type) {
 		case cd:
@@ -248,7 +254,8 @@ int is_builtin_command(const char* cmd) {
  * Caller is responsible for freeing returned array.
  *
  */
-char* const* get_params(const char* cmd[], int array_size, int* param_size) {
+char* const* get_params(const char* cmd[], int array_size, int* param_size)
+{
 	/* Duplicate given command with its parameters
 	 * but leave space for one extra NULL element at the end*/
 	char** copy = calloc(array_size + 1, sizeof(char*));
@@ -268,7 +275,8 @@ char* const* get_params(const char* cmd[], int array_size, int* param_size) {
 	return (char* const*) copy;
 }
 
-int run_command(const char* cmd[], int array_size) {
+int run_command(const char* cmd[], int array_size)
+{
 	int param_size;
 	const char* command = cmd[0];
 	char * const * params = get_params(cmd, array_size, &param_size);
@@ -310,7 +318,8 @@ int run_command(const char* cmd[], int array_size) {
 	return 1;
 }
 
-int is_empty_command(const char* cmd) {
+int is_empty_command(const char* cmd)
+{
 	if(strlen(cmd) == 0) {
 		return 1;
 	}
@@ -320,7 +329,8 @@ int is_empty_command(const char* cmd) {
 /*
  * Records the given command into the history linked list.
  */
-void record_command_in_history(const char* cmd[], int array_size) {
+void record_command_in_history(const char* cmd[], int array_size)
+{
 	/*
 	 * Only add the command to the history if it is an execute_history
 	 * command or another general command
@@ -350,7 +360,8 @@ void record_command_in_history(const char* cmd[], int array_size) {
  * Return the node at index 'index' or NULL if index does not exist.
  *
  */
-struct String* get_string_at_index(struct StringList* list, int index) {
+struct String* get_string_at_index(struct StringList* list, int index)
+{
 	struct String* curr = list->head;
 	int i = 0;
 	for(; curr != NULL; curr = curr->next) {
@@ -366,7 +377,8 @@ struct String* get_string_at_index(struct StringList* list, int index) {
  * Combines the given string array together into one string.
  * The strings are separated by a single whitespace.
  */
-char* combine_string_array(const char* cmd[], int array_size) {
+char* combine_string_array(const char* cmd[], int array_size)
+{
 	char* output = calloc(1, sizeof(char));
 	int curr_size = 1;
 	int i = 0;
@@ -387,7 +399,8 @@ char* combine_string_array(const char* cmd[], int array_size) {
 /**
  * Removes trailing white space in the given string.
  */
-void remove_trailing_whitespace(char* string) {
+void remove_trailing_whitespace(char* string)
+{
 	int length = strlen(string);
 	int i = length - 1;
 	for(; isspace(string[i]); --i) {
@@ -399,7 +412,8 @@ void remove_trailing_whitespace(char* string) {
  * Removes both trailing and leading whitespace in given
  * string
  */
-void trim_whitespace(char* string) {
+void trim_whitespace(char* string)
+{
 	remove_trailing_whitespace(string);
 	remove_leading_whitespace(string);
 }
@@ -408,7 +422,8 @@ void trim_whitespace(char* string) {
 /*
  * Removes the leading white space in given string
  */
-void remove_leading_whitespace(char* string) {
+void remove_leading_whitespace(char* string)
+{
 	/* find first non-whitespace character index */
 	int non_ws_char_idx = 0;
 	int i = 0;
@@ -437,7 +452,8 @@ void remove_leading_whitespace(char* string) {
 	string[i] = '\0';
 }
 
-int should_exit(const char* cmd) {
+int should_exit(const char* cmd)
+{
 	if(strcmp(cmd,"exit") == 0) {
 		return 1;
 	} else {
@@ -449,7 +465,8 @@ int should_exit(const char* cmd) {
  * Runs the builtin command.
  * Return 1 on success and 0 on failure.
  */
-int run_builtin_command(const char* cmd[]) {
+int run_builtin_command(const char* cmd[])
+{
 	int cmd_type = get_command_type(cmd[0]);
 	switch (cmd_type) {
 		case cd: {
@@ -477,7 +494,8 @@ int run_builtin_command(const char* cmd[]) {
 /**
  * Runs the builtin list history command
  */
-int run_list_history(void) {
+int run_list_history(void)
+{
 	/* To be implemented*/
 	struct String* curr = HISTORY.head;
 	int i = 0;
@@ -494,7 +512,8 @@ int run_list_history(void) {
  * Command is of the form !n where n is an number.
  * At the moment, N supports at most 100 commands.
  */
-int run_execute_history(const char *cmd[]) {
+int run_execute_history(const char *cmd[])
+{
 	/*
 	 * Command has the format !n
 	 * where n is a integer number
@@ -522,7 +541,8 @@ int run_execute_history(const char *cmd[]) {
  * path : this displays all currently stored paths separated by a ':'
  *
  */
-int run_path_cmd(const char* cmd[]) {
+int run_path_cmd(const char* cmd[])
+{
 	char key = *cmd[1];
 	switch (key) {
 		case '+':{ /* add a new path to the list */
@@ -564,7 +584,8 @@ int run_path_cmd(const char* cmd[]) {
 }
 
 /* Runs the change directory command */
-int run_change_directory(const char* cmd[]) {
+int run_change_directory(const char* cmd[])
+{
 	int ret;
 	if(strcmp(cmd[1], "") == 0) { /* No params given*/
 		/*
@@ -593,7 +614,8 @@ int run_change_directory(const char* cmd[]) {
  * global PATH class variable for the first suitable path.
  * Caller is responsible for freeing returned char*
  */
-char* get_full_path(const char* cmd) {
+char* get_full_path(const char* cmd)
+{
 	/*To be completed */
 	if(is_absolute_path(cmd)) {
 		return (char *) cmd;
@@ -645,17 +667,20 @@ char* get_full_path(const char* cmd) {
 	}
 }
 
-void init(void) {
+void init(void)
+{
 	initialize_path_list();
 	initialize_history_list();
 }
 
-void initialize_path_list(void) {
+void initialize_path_list(void)
+{
 	PATH.size = 0;
 	PATH.head = NULL;
 }
 
-void initialize_history_list(void) {
+void initialize_history_list(void)
+{
 	HISTORY.size = 0;
 	HISTORY.head = NULL;
 }
@@ -666,7 +691,8 @@ void initialize_history_list(void) {
  * ignoring any white space that preceeds it.
  * i.e. "    /abs" is also an absolute path.
  */
-int is_absolute_path(const char* cmd) {
+int is_absolute_path(const char* cmd)
+{
 	int i = 0;
 	for(; cmd[i] != '\0'; ++i) {
 		/*skip over initial whitespace*/
@@ -686,7 +712,8 @@ int is_absolute_path(const char* cmd) {
  * Adds the given command to the history list.
  * The item is inserted at the END of the list.
  */
-void add_string_to_history_list(const char* string, struct StringList* list) {
+void add_string_to_history_list(const char* string, struct StringList* list)
+{
 	int size = list->size;
 	int new_size = size + 1;
 
@@ -732,7 +759,8 @@ void add_string_to_history_list(const char* string, struct StringList* list) {
  * The path is inserted at the front of the list so that this is an
  * O(1) constant time operation
  */
-void add_string_to_path_list(const char* string, struct StringList* list) {
+void add_string_to_path_list(const char* string, struct StringList* list)
+{
 	int size = list->size;
 	int new_size = size + 1;
 
@@ -764,7 +792,8 @@ void add_string_to_path_list(const char* string, struct StringList* list) {
 /**
  * Delete the first item in the linked list (i.e. the HEAD)
  */
-void delete_head_from_list(struct StringList* list) {
+void delete_head_from_list(struct StringList* list)
+{
 	int size = list->size;
 	if(size == 0) {
 		return;
@@ -786,7 +815,8 @@ void delete_head_from_list(struct StringList* list) {
  * Removes all copies of string from the path list
  */
 void remove_all_string_from_path_list(const char* string,
-				      struct StringList* list) {
+				      struct StringList* list)
+{
 	/* remove all copies of string*/
 	while(remove_string_from_path_list(string, list) != 0);
 }
@@ -795,7 +825,8 @@ void remove_all_string_from_path_list(const char* string,
  * Removes the given string from the specified Path list
  * Returns 0 on failure and 1 on successful removal of element.
  */
-int remove_string_from_path_list(const char* string, struct StringList* list) {
+int remove_string_from_path_list(const char* string, struct StringList* list)
+{
 	int deleted = 0;
 	struct String* curr = list->head;
 	struct String* first = curr;
@@ -844,7 +875,8 @@ int remove_string_from_path_list(const char* string, struct StringList* list) {
 /*Returns the type of the  given command with NO arguments.
  * or -1 on error
  */
-int get_command_type(const char* cmd) {
+int get_command_type(const char* cmd)
+{
 	if(strcmp(cmd, "cd") == 0) {
 		return cd;
 	} else  if(strcmp(cmd, "path") == 0) {
@@ -862,7 +894,8 @@ int get_command_type(const char* cmd) {
  * Tests the given command to determine if it's the history command
  * given by: !n where n is anumber.
  */
-int is_execute_history_cmd(const char* cmd) {
+int is_execute_history_cmd(const char* cmd)
+{
 	if(cmd[0] == '!') {
 		int i = 1;
 		for(; cmd[i] != '\0'; ++i) {
@@ -881,7 +914,8 @@ int is_execute_history_cmd(const char* cmd) {
  * Determines if the given file path exists or not.
  * return 1 on success and 0 on failure
  */
-int exists_file(const char* file_path) {
+int exists_file(const char* file_path)
+{
 	/* access returns 0 on success */
 	if (access(file_path, R_OK) == 0) {
 		return 1;
@@ -894,7 +928,8 @@ int exists_file(const char* file_path) {
  * Determines if the given file can be ran
  * return 1 on success and 0 on failure
  */
-int can_execute_file(const char* file_path) {
+int can_execute_file(const char* file_path)
+{
 	/* access returns 0 on success */
 	if (access(file_path, X_OK) == 0) {
 		return 1;
@@ -908,7 +943,8 @@ int can_execute_file(const char* file_path) {
  * command is found.
  * Otherwise returns -1 to indicate cmd was not found in any path
  */
-int get_first_path_index(const char* cmd, const char* paths[], int array_size) {
+int get_first_path_index(const char* cmd, const char* paths[], int array_size)
+{
 	int i = 0;
 	for(; i < array_size; ++i) {
 		char* full_path = join_path(paths[i], cmd);
@@ -924,7 +960,8 @@ int get_first_path_index(const char* cmd, const char* paths[], int array_size) {
  * Joins together the given directory with the specified path.
  * Caller is responsible for freeing return string.
  */
-char* join_path(const char* dir, const char* path) {
+char* join_path(const char* dir, const char* path)
+{
 	int i = 0;
 	char curr;
 	char next;
@@ -959,7 +996,8 @@ char* join_path(const char* dir, const char* path) {
  * properly (i.e. not null). If null, it exits the program.
  * function - is the name of the function in which the ptr was allocated.
  */
-void check_allocated_mem(const char* function, void * input) {
+void check_allocated_mem(const char* function, void * input)
+{
 	if(input == NULL) {
 		char err_msg[] = "Memory Allocation Failure in ";
 		int size = strlen(function) + 1 + 30;
@@ -985,7 +1023,8 @@ void check_allocated_mem(const char* function, void * input) {
  * where the initial pointer is on the stack, but the pointers themselves
  * are dynamically allocated.
  */
-void free_pointer_array(void** array, int array_size, int is_stack_ptr) {
+void free_pointer_array(void** array, int array_size, int is_stack_ptr)
+{
 	int i = 0;
 	for(; i < array_size; ++i) {
 		if(array[i] != NULL) {
