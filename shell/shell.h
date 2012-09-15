@@ -147,6 +147,8 @@ char* combine_string_array(const char* cmd[], int array_size);
 
 void record_command_in_history(const char* cmd[], int array_size);
 
+int is_empty_command(const char* cmd);
+
 /**
  * Tests
  */

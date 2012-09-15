@@ -269,6 +269,9 @@ int run_command(const char* cmd[], int array_size) {
 	const char* command = cmd[0];
 	char * const * params = get_params(cmd, array_size, &param_size);
 
+	if(is_empty_command(cmd)) {
+		return 1;
+	}
 	if(should_exit(command)) {
 		exit(EXIT_SUCCESS);
 	}
@@ -300,6 +303,13 @@ int run_command(const char* cmd[], int array_size) {
 	}
 	free_pointer_array((void**)params, param_size, 0);
 	return 1;
+}
+
+int is_empty_command(const char* cmd) {
+	if(strlen(cmd) == 0) {
+		return 1;
+	}
+	return 0;
 }
 
 /*
@@ -494,19 +504,12 @@ int run_change_directory(const char* cmd[]) {
 	int ret;
 	if(strcmp(cmd[1], "") == 0) { /* No params given*/
 		/*
-		 * No params given. Return to home directory.
+		 * No params given. We should report an error
+		 * per the homework specification.
 		 */
-		uid_t uid = getuid();
-		struct passwd* user_info_ptr = getpwuid(uid);
-		char* user_home = user_info_ptr->pw_dir;
-		if(user_home != NULL) {
-			ret = chdir(user_home);
-		} else {
-			/*
-			 * Go to home folder, if user's home dir is unknown.
-			 */
-			ret = chdir("/home");
-		}
+		print_error("No path specified. Not changing directory");
+		return 0;
+
 	} else {
 		ret = chdir(cmd[1]);
 	}
