@@ -84,6 +84,8 @@ struct String *get_string_at_index(struct StringList *list, int index);
 
 void delete_head_from_list(struct StringList *list);
 
+void delete_tail_from_list(struct StringList *list);
+
 void remove_all_string_from_path_list(const char *string,
 				      struct StringList *list);
 

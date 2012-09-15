@@ -15,6 +15,7 @@ int main(void) {
 /***** TESTS *******/
 void test_all(void) {
 	printf("Running Tests...\n");
+	test_delete_tail_from_list();
 	test_trim();
 	test_combine_string_array();
 	test_add_string_to_history_list();
@@ -271,4 +272,27 @@ void test_trim(void) {
 	assert(strcmp(test, expected) == 0);
 	trim_whitespace(test);
 	assert(strcmp(test, expected) == 0);
+}
+
+
+void test_delete_tail_from_list(void) {
+	init();
+	add_string_to_path_list("one", &PATH);
+	add_string_to_path_list("two", &PATH);
+	add_string_to_path_list("three", &PATH);
+
+	/* Verify the addition worked first */
+	assert(strcmp(PATH.head->data, "three") == 0);
+	assert(PATH.head->size == 6);
+	assert(strcmp(PATH.head->next->data, "two") == 0);
+	assert(PATH.head->next->size == 4);
+	assert(strcmp(PATH.head->next->next->data, "one") == 0);
+	assert(PATH.head->next->next->size == 4);
+	assert(PATH.size == 3);
+
+	/* delete tail element and verify it's gone */
+	delete_tail_from_list(&PATH);
+	assert(strcmp(PATH.head->data, "three") == 0);
+	assert(strcmp(PATH.head->next->data, "two") == 0);
+	assert(PATH.head->next->next == NULL);
 }

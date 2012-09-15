@@ -40,6 +40,7 @@ void test_add_string_to_history_list(void);
 void test_combine_string_array(void);
 void test_trim(void);
 int test_print(void);
+void test_delete_tail_from_list(void);
 
 
 #endif /* TEST_H_ */

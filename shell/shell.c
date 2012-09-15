@@ -340,21 +340,8 @@ void record_command_in_history(const char *cmd[], int array_size)
 	 * command or another general command
 	 */
 	int cmd_type = get_command_type(cmd[0]);
-	if (cmd_type == list_history) {
+	if (cmd_type == list_history || cmd_type == execute_history) {
 		/* don't add this to the history */
-	} else if (cmd_type == execute_history) {
-		/* Expand the command */
-		const char *cmd_number = &(cmd[0][1]);
-		int index = atoi(cmd_number);
-		struct String *old_cmd = get_string_at_index(&HISTORY, index);
-		if (old_cmd != NULL) {
-			int len = strlen(old_cmd->data);
-			char *copy = calloc(len + 1, sizeof(char));
-			check_allocated_mem("record_history", (void *) copy);
-			strncat(copy, old_cmd->data, len);
-			add_string_to_history_list(copy, &HISTORY);
-			free(copy);
-		}
 	} else {
 		char *full_cmd_string = combine_string_array(cmd, array_size);
 		add_string_to_history_list(full_cmd_string, &HISTORY);
@@ -821,6 +808,32 @@ void delete_head_from_list(struct StringList *list)
 		list->head = list->head->next;
 		free(to_delete->data);
 		free(to_delete);
+		list->size--;
+	}
+}
+
+/**
+ *
+ * Removes the last item in the linked list
+ */
+void delete_tail_from_list(struct StringList *list) {
+	int size = list->size;
+	if (size == 0) {
+		return;
+	} else if (size == 1) {
+		free(list->head->data);
+		free(list->head);
+		list->head = NULL;
+		list->size--;
+	} else { /* have at least 2 elements */
+		struct String *prev = list->head;
+		struct String *curr = list->head->next;
+		/* Advance to end of list */
+		for(; curr->next != NULL; prev = curr, curr = curr->next);
+
+		prev->next = NULL;
+		free(curr->data);
+		free(curr);
 		list->size--;
 	}
 }
