@@ -29,8 +29,8 @@ int test (int argc, char** argv)
 int main(int argc, char **argv)
 {
 	//test(argc, argv);
-	test_all();
-	//run_shell();
+	//test_all();
+	run_shell();
 	return 0;
 }
 
@@ -44,6 +44,7 @@ int run_shell(void) {
 	while(1) {
 		print_prompt();
 		char* user_input = read_line();
+		trim_whitespace(user_input);
 		char* parsed[MAX_ARGUMENTS];
 		parse_line(user_input, parsed, MAX_ARGUMENTS);
 		run_command((const char**)parsed, MAX_ARGUMENTS);
@@ -1255,6 +1256,8 @@ void test_combine_string_array(void) {
 void test_trim(void) {
 	char test[] = "   hello   ";
 	char expected[] = "hello";
+	trim_whitespace(test);
+	assert(strcmp(test, expected) == 0);
 	trim_whitespace(test);
 	assert(strcmp(test, expected) == 0);
 }
