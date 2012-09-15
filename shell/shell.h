@@ -87,6 +87,7 @@ void delete_head_from_list(struct StringList *list);
 void remove_all_string_from_path_list(const char *string,
 				      struct StringList *list);
 
+int count_string_in_list(const char *string, struct StringList *list);
 
 /**
  * This parses the given line into separate string.

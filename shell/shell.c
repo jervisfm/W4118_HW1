@@ -286,9 +286,10 @@ int run_command(const char *cmd[], int array_size)
 	/* we record both builtin commands and external commands */
 	record_command_in_history(cmd, array_size);
 
-	if (is_builtin_command(command))
+	if (is_builtin_command(command)) {
+		free_pointer_array((void **) params, param_size, 0);
 		return run_builtin_command(cmd);
-
+	}
 
 	int pid;
 	pid = fork();
@@ -352,6 +353,7 @@ void record_command_in_history(const char *cmd[], int array_size)
 			check_allocated_mem("record_history", (void *) copy);
 			strncat(copy, old_cmd->data, len);
 			add_string_to_history_list(copy, &HISTORY);
+			free(copy);
 		}
 	} else {
 		char *full_cmd_string = combine_string_array(cmd, array_size);
@@ -658,7 +660,8 @@ char *get_full_path(const char *cmd)
 				    can_execute_file(full_path)) {
 					break;
 				}
-				free(full_path);
+				if(full_path != NULL)
+					free(full_path);
 			}
 		}
 		free(curr_dir);
@@ -825,10 +828,34 @@ void delete_head_from_list(struct StringList *list)
  * Removes all copies of string from the path list
  */
 void remove_all_string_from_path_list(const char *string,
-		struct StringList *list)
+				      struct StringList *list)
 {
+
+	/* find how copies of the string there are */
+	const int kCopies = count_string_in_list(string, list);
+	int count = 0;
+	if (kCopies == 0) {
+		print_error("Cannot remove from PATH - Item not found");
+		return;
+	}
 	/* remove all copies of string*/
-	while (remove_string_from_path_list(string, list) != 0);
+	while (++count <= kCopies && /* run loop exactly kCopies time*/
+	       remove_string_from_path_list(string, list) != 0);
+}
+
+/*
+ * Counts how many string in the list have the given value
+ */
+int count_string_in_list(const char *string, struct StringList *list) {
+	if (list == NULL)
+		return 0 ;
+	struct String* curr = list->head;
+	int count = 0;
+	for(; curr != NULL; curr = curr->next) {
+		if(strcmp(curr->data, string) == 0)
+			++count;
+	}
+	return count;
 }
 
 /**
