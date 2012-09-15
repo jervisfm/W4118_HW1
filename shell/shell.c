@@ -21,7 +21,8 @@ int test (int argc, char** argv)
  * -> Test path with"." and ..
  * -> test relative paths bin/../bin
  * remove new line at beginning.
- * -> do nothing on empty inpit.
+ * -> do nothing on empty input.
+ * ->modify cd to fail on empty
  */
 
 int main(int argc, char **argv)
