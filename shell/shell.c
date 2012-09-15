@@ -106,11 +106,11 @@ void parse_line(const char *line, char *parsed[], const int size)
 	for (; line[i] != '\0'; ++i) {
 		current = line[i];
 		next = line[i + 1];
-		if (isspace(current)) {
+		if (isspace(current))
 			mode = skipping;
-		} else {
+		else
 			mode = reading;
-		}
+
 
 		if (string_no >= MAX_ARGUMENTS) {
 			printf("Only considering %d arguments\n", MAX_ARGUMENTS
@@ -154,8 +154,8 @@ void initialize_string_array(char *array[], int buffer_size, int array_size)
 	for (i = 0; i < array_size; ++i) {
 		array[i] = (char *) calloc(buffer_size, sizeof(char));
 		if (array[i] == NULL) {
-			print_error("Memory allocation failed in "
-				"initialize_string_array");
+			print_error("Memory allocation failed in " \
+				    "initialize_string_array");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -172,11 +172,11 @@ int get_maximum_string(const char *line)
 	for (; line[i] != '\0'; ++i) {
 		current = line[i];
 		next = line[i + 1];
-		if (isspace(current)) {
+		if (isspace(current))
 			mode = skipping;
-		} else {
+		else
 			mode = reading;
-		}
+
 
 		switch (mode) {
 		case reading: {
@@ -268,18 +268,18 @@ int run_command(const char *cmd[], int array_size)
 	const char *command = cmd[0];
 	char * const *params = get_params(cmd, array_size, &param_size);
 
-	if (is_empty_command(cmd[0])) {
+	if (is_empty_command(cmd[0]))
 		return 1;
-	}
-	if (should_exit(command)) {
+
+	if (should_exit(command))
 		exit(EXIT_SUCCESS);
-	}
+
 	/* we record both builtin commands and external commands */
 	record_command_in_history(cmd, array_size);
 
-	if (is_builtin_command(command)) {
+	if (is_builtin_command(command))
 		return run_builtin_command(cmd);
-	}
+
 
 	int pid;
 	pid = fork();
@@ -353,9 +353,9 @@ struct String *get_string_at_index(struct StringList *list, int index)
 	struct String *curr = list->head;
 	int i = 0;
 	for (; curr != NULL; curr = curr->next) {
-		if (i == index) {
+		if (i == index)
 			return curr;
-		}
+
 		++i;
 	}
 	return NULL;
@@ -431,9 +431,9 @@ void remove_leading_whitespace(char *string)
 	 */
 	i = 0;
 	int j = non_ws_char_idx;
-	for (; string[j] != '\0'; ++j, ++i) {
+	for (; string[j] != '\0'; ++j, ++i)
 		string[i] = string[j];
-	}
+
 
 	/*Copy over null character */
 	string[i] = '\0';
@@ -441,11 +441,11 @@ void remove_leading_whitespace(char *string)
 
 int should_exit(const char *cmd)
 {
-	if (strcmp(cmd, "exit") == 0) {
+	if (strcmp(cmd, "exit") == 0)
 		return 1;
-	} else {
+	 else
 		return 0;
-	}
+
 }
 
 /**
@@ -559,9 +559,9 @@ int run_path_cmd(const char *cmd[])
 		struct String *curr = PATH.head;
 		for (; curr != NULL; curr = curr->next) {
 			printf("%s", curr->data);
-			if (curr->next != NULL) {
+			if (curr->next != NULL)
 				printf(":");
-			}
+
 		}
 		printf("\n");
 		break;
@@ -681,14 +681,15 @@ int is_absolute_path(const char *cmd)
 	int i = 0;
 	for (; cmd[i] != '\0'; ++i) {
 		/*skip over initial whitespace*/
-		if (isspace(cmd[i])) {
+		if (isspace(cmd[i]))
 			continue;
-		}
-		if (cmd[i] == '/') {
+
+
+		if (cmd[i] == '/')
 			return 1;
-		} else {
+		else
 			return 0;
-		}
+
 	}
 	return 0;
 }
@@ -861,17 +862,17 @@ int remove_string_from_path_list(const char *string, struct StringList *list)
  */
 int get_command_type(const char *cmd)
 {
-	if (strcmp(cmd, "cd") == 0) {
+	if (strcmp(cmd, "cd") == 0)
 		return cd;
-	} else if (strcmp(cmd, "path") == 0) {
+	else if (strcmp(cmd, "path") == 0)
 		return path;
-	} else if (strcmp(cmd, "history") == 0) {
+	else if (strcmp(cmd, "history") == 0)
 		return list_history;
-	} else if (is_execute_history_cmd(cmd)) {
+	else if (is_execute_history_cmd(cmd))
 		return execute_history;
-	} else {
+	else
 		return external_command;
-	}
+
 }
 
 /*
@@ -883,9 +884,9 @@ int is_execute_history_cmd(const char *cmd)
 	if (cmd[0] == '!') {
 		int i = 1;
 		for (; cmd[i] != '\0'; ++i) {
-			if (!isdigit(cmd[i])) {
+			if (!isdigit(cmd[i]))
 				return 0;
-			}
+
 		}
 	} else { /* no an execute_history command */
 		return 0;
@@ -901,11 +902,10 @@ int is_execute_history_cmd(const char *cmd)
 int exists_file(const char *file_path)
 {
 	/* access returns 0 on success */
-	if (access(file_path, R_OK) == 0) {
+	if (access(file_path, R_OK) == 0)
 		return 1;
-	} else {
+	else
 		return 0;
-	}
 }
 
 /**
@@ -915,11 +915,10 @@ int exists_file(const char *file_path)
 int can_execute_file(const char *file_path)
 {
 	/* access returns 0 on success */
-	if (access(file_path, X_OK) == 0) {
+	if (access(file_path, X_OK) == 0)
 		return 1;
-	} else {
+	else
 		return 0;
-	}
 }
 
 /*
@@ -1009,12 +1008,12 @@ void free_pointer_array(void **array, int array_size, int is_stack_ptr)
 {
 	int i = 0;
 	for (; i < array_size; ++i) {
-		if (array[i] != NULL) {
+		if (array[i] != NULL)
 			free(array[i]);
-		}
+
 	}
-	if (!is_stack_ptr) {
+
+	if (!is_stack_ptr)
 		free(array);
-	}
 }
 
