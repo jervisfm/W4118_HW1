@@ -47,7 +47,7 @@ enum ParseMode {
 enum CommandType {
 	cd, path, list_history, execute_history, external_command
 };
-
+char* BUILTIN_COMMANDS[] = {"cd", "path", "history"};
 /*
  * Reads from standard input.
  * Caller responsible for freeing returned line string
