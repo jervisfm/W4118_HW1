@@ -561,6 +561,7 @@ int run_path_cmd(const char* cmd[]) {
 					printf(":");
 				}
 			}
+			printf("\n");
 			break;
 		}
 	}
@@ -839,7 +840,7 @@ int remove_string_from_path_list(const char* string, struct StringList* list) {
 		print_error("Cannot remove from PATH - Item not found");
 		return 0;
 	} else {
-		printf("Removed %s from PATH", string);
+		printf("Removed %s from PATH\n", string);
 		return 1;
 	}
 }
