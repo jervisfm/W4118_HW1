@@ -6,16 +6,51 @@ Readme
 About
 ============================
 Shell is a simple C-based Shell.
+It has support for 4 internal commands.
+* exit : quits the shell
+* cd : changes the current working directory for the shell.
+* path : lists the internal PATH variable for this shell.
+* history : lists a history of previous commands
 
 
 How to Compile
 ===============
-
+make clean && make all
 
 
 How to Run
 ==================
+You can run shell by running ./w4118_sh
+
+
+Simple Sample Runs:
+==================
+./w4118_sh
+$ /bin/ls
+checkpatch.pl  main.o		   README	test.c	       w4118_sh
+cs	       Makefile		   shell.c	test.h
+diffpatch.txt  new_test_file	   shell.h	test.h.gch
+hw1_test.py    pexpect-2.3	   shell.h.gch	test.o
+main.c	       pexpect-2.3.tar.gz  shell.o	test_w4118_sh
+
+$ /bin/pwd
+/mnt/hgfs/Programming/C/OS/hmwk1/shell
+
+
+Error Handling
+=================
+The shell will print out an error if an error condition is reached.
+If the error is not recoverable, (for an example an out-of-memory error)
+the shell will indicate this and exit.
 
 
 Testing
 =================
+A Unit testing approach was taken to testing the fundamental pieces of the shell
+program. These tests can be found in test.h test.c files. To run all unit tests
+you can execute ./test_w4118_sh.
+
+Furthermore, The shell program was tested by manually running it and executing different
+command to see if they worked.
+
+
