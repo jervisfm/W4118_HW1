@@ -241,7 +241,7 @@ int is_builtin_command(const char *cmd)
  * Caller is responsible for freeing returned array.
  *
  */
-char* const * get_params(const char *cmd[], int array_size, int *param_size)
+char * const *get_params(const char *cmd[], int array_size, int *param_size)
 {
 	/* Duplicate given command with its parameters
 	 * but leave space for one extra NULL element at the end*/
@@ -302,7 +302,7 @@ int run_command(const char *cmd[], int array_size)
 		while (wait(&status) != pid)
 			;
 	}
-	free_pointer_array((void**) params, param_size, 0);
+	free_pointer_array((void **) params, param_size, 0);
 	return 1;
 }
 
@@ -609,7 +609,7 @@ char *get_full_path(const char *cmd)
 	} else {
 		/* Get the current directory first.
 		 passing null auto-allocates the char buffer */
-		char* curr_dir = getcwd(NULL, 0);
+		char *curr_dir = getcwd(NULL, 0);
 		if (curr_dir == NULL) {
 			/* An error occured */
 			print_error("Failed to get current directory");
@@ -632,7 +632,7 @@ char *get_full_path(const char *cmd)
 				if (is_absolute_path(curr_path)) {
 					full_path = join_path(curr_path, cmd);
 				} else { /*it is a relative path */
-					char* temp = join_path(curr_dir,
+					char *temp = join_path(curr_dir,
 							curr_path);
 					full_path = join_path(temp, cmd);
 					free(temp);
@@ -944,7 +944,7 @@ int get_first_path_index(const char *cmd, const char *paths[], int array_size)
  * Joins together the given directory with the specified path.
  * Caller is responsible for freeing return string.
  */
-char* join_path(const char *dir, const char *path)
+char *join_path(const char *dir, const char *path)
 {
 	int i = 0;
 	char curr;
