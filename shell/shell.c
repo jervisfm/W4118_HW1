@@ -1003,6 +1003,7 @@ void free_pointer_array(void** array, int array_size, int is_stack_ptr) {
 /***** TESTS *******/
 void test_all(void) {
 	printf("Running Tests...\n");
+	test_trim();
 	test_combine_string_array();
 	test_add_string_to_history_list();
 	test_run_path_cmd();
@@ -1249,4 +1250,11 @@ void test_combine_string_array(void) {
 	char* combined = combine_string_array(test,size);
 	printf("\nGot:%s", combined);
 	assert(strcmp(combined, expected) == 0);
+}
+
+void test_trim(void) {
+	char test[] = "   hello   ";
+	char expected[] = "hello";
+	trim_whitespace(test);
+	assert(strcmp(test, expected) == 0);
 }
