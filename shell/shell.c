@@ -183,9 +183,8 @@ int get_maximum_string(const char *line)
 		switch (mode) {
 		case reading: {
 			++size;
-			if (size > max) {
+			if (size > max)
 				max = size;
-			}
 			break;
 		}
 		case skipping: {
@@ -216,15 +215,15 @@ int is_builtin_command(const char *cmd)
 {
 	int cmd_type = get_command_type(cmd);
 	switch (cmd_type) {
-		case cd:
-		case path:
-		case list_history:
-		case execute_history:
-			return 1;
-			break;
-		default:
-			return 0;
-			break;
+	case cd:
+	case path:
+	case list_history:
+	case execute_history:
+		return 1;
+		break;
+	default:
+		return 0;
+		break;
 	}
 	return 0;
 }
@@ -312,8 +311,9 @@ int run_command(const char *cmd[], int array_size)
 		int status;
 		/* wait for child process for finish running */
 		while ((wait_status = wait(&status)) != -1 &&
-			wait_status != pid);
-		if(wait_status == -1) {
+			wait_status != pid)
+			;
+		if (wait_status == -1) {
 			print_error("Wait System Call failed");
 			perror(NULL);
 		}
@@ -324,9 +324,8 @@ int run_command(const char *cmd[], int array_size)
 
 int is_empty_command(const char *cmd)
 {
-	if (strlen(cmd) == 0) {
+	if (strlen(cmd) == 0)
 		return 1;
-	}
 	return 0;
 }
 
@@ -397,9 +396,9 @@ void remove_trailing_whitespace(char *string)
 {
 	int length = strlen(string);
 	int i = length - 1;
-	for (; i > 0 && isspace(string[i]); --i) {
+	for (; i > 0 && isspace(string[i]); --i)
 		string[i] = '\0';
-	}
+
 }
 
 /**
@@ -493,9 +492,9 @@ int run_list_history(void)
 	struct String *curr = HISTORY.head;
 	int i = 1;
 	for (; curr != NULL; curr = curr->next) {
-		if (curr->data) {
+		if (curr->data)
 			printf("[%d] %s\n", i++, curr->data);
-		}
+
 	}
 	return 1;
 }
@@ -648,7 +647,7 @@ char *get_full_path(const char *cmd)
 				    can_execute_file(full_path)) {
 					break;
 				}
-				if(full_path != NULL)
+				if (full_path != NULL)
 					free(full_path);
 			}
 		}
@@ -697,13 +696,13 @@ int is_absolute_path(const char *cmd)
 		/* An absolute path has '/' character in index 0
 		 * like in '/bin/ls' or in index 1 as in './ls'
 		 */
-		if (cmd[i] == '/') {
+		if (cmd[i] == '/')
 			return 1;
-		} else if(cmd[i] == '.' && cmd[i+1] == '/') {
+		else if (cmd[i] == '.' && cmd[i+1] == '/')
 			return 1;
-		} else {
+		else
 			return 0;
-		}
+
 
 	}
 	return 0;
@@ -816,7 +815,8 @@ void delete_head_from_list(struct StringList *list)
  *
  * Removes the last item in the linked list
  */
-void delete_tail_from_list(struct StringList *list) {
+void delete_tail_from_list(struct StringList *list)
+{
 	int size = list->size;
 	if (size == 0) {
 		return;
@@ -829,7 +829,8 @@ void delete_tail_from_list(struct StringList *list) {
 		struct String *prev = list->head;
 		struct String *curr = list->head->next;
 		/* Advance to end of list */
-		for(; curr->next != NULL; prev = curr, curr = curr->next);
+		for (; curr->next != NULL; prev = curr, curr = curr->next)
+			;
 
 		prev->next = NULL;
 		free(curr->data);
@@ -854,19 +855,21 @@ void remove_all_string_from_path_list(const char *string,
 	}
 	/* remove all copies of string*/
 	while (++count <= kCopies && /* run loop exactly kCopies time*/
-	       remove_string_from_path_list(string, list) != 0);
+	       remove_string_from_path_list(string, list) != 0)
+		;
 }
 
 /*
  * Counts how many string in the list have the given value
  */
-int count_string_in_list(const char *string, struct StringList *list) {
+int count_string_in_list(const char *string, struct StringList *list)
+{
 	if (list == NULL)
 		return 0 ;
-	struct String* curr = list->head;
+	struct String *curr = list->head;
 	int count = 0;
-	for(; curr != NULL; curr = curr->next) {
-		if(strcmp(curr->data, string) == 0)
+	for (; curr != NULL; curr = curr->next) {
+		if (strcmp(curr->data, string) == 0)
 			++count;
 	}
 	return count;
@@ -995,9 +998,8 @@ int get_first_path_index(const char *cmd, const char *paths[], int array_size)
 	int i = 0;
 	for (; i < array_size; ++i) {
 		char *full_path = join_path(paths[i], cmd);
-		if (exists_file(full_path) && can_execute_file(full_path)) {
+		if (exists_file(full_path) && can_execute_file(full_path))
 			return i;
-		}
 		free(full_path);
 	}
 	return -1;
