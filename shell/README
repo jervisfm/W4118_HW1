@@ -51,6 +51,6 @@ program. These tests can be found in test.h test.c files. To run all unit tests
 you can execute ./test_w4118_sh.
 
 Furthermore, The shell program was tested by manually running it and executing different
-command to see if they worked.
+commands to see if they worked.
 
 
