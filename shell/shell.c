@@ -23,6 +23,7 @@ int test (int argc, char** argv)
  * remove new line at beginning.
  * -> do nothing on empty input.
  * ->modify cd to fail on empty
+ * -> check return call of WAIT
  */
 
 int main(int argc, char **argv)
@@ -788,19 +789,30 @@ int get_command_type(const char* cmd) {
 		return path;
 	}  else if(strcmp(cmd, "history") == 0) {
 		return list_history;
+	} else if (is_execute_history_cmd(cmd)) {
+		return execute_history;
 	} else {
-		/*check if it's the execute history cmd !n where n is
-		 * a number  or not*/
-		if(cmd[0] == '!') {
-			int i = 1;
-			for(; cmd[i] != '\0'; ++i) {
-				if(!isdigit(cmd[i])) {
-					return -1;
-				}
+		return external_command;
+	}
+}
+
+/*
+ * Tests the given command to determine if it's the history command
+ * given by: !n where n is anumber.
+ */
+int is_execute_history_cmd(const char* cmd) {
+	if(cmd[0] == '!') {
+		int i = 1;
+		for(; cmd[i] != '\0'; ++i) {
+			if(!isdigit(cmd[i])) {
+				return 0;
 			}
 		}
-		return execute_history;
+	} else { /* no an execute_history command */
+		return 0;
 	}
+	/* it's an execute_history command */
+	return 1;
 }
 
 /**
