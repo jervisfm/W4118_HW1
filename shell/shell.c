@@ -39,7 +39,7 @@ int run_shell(void)
 		parse_line(user_input, parsed, MAX_ARGUMENTS);
 		run_command((const char **) parsed, MAX_ARGUMENTS);
 		free(user_input);
-		//free_pointer_array((void**) parsed);
+		free_pointer_array((void **) parsed, MAX_ARGUMENTS, 1);
 	}
 }
 
