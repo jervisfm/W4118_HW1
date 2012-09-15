@@ -8,6 +8,8 @@
 #include <pwd.h>
 #include "shell.h"
 
+char *BUILTIN_COMMANDS[] = {"cd", "path", "history"};
+
 int test(int argc, char **argv)
 {
 	return 0;
@@ -557,13 +559,13 @@ int run_path_cmd(const char *cmd[])
 		printf("Added new path: %s\n", new_path);
 		break;
 	}
-	case '-': { /* remove path from the list */
+	case '-': { /* remove all copies of path from the list */
 		const char *new_path = cmd[2];
 		if (new_path == NULL || strcmp(new_path, "") == 0) {
 			print_error("Please provide a non-empty path");
 			return 0;
 		}
-		remove_string_from_path_list(new_path, &PATH);
+		remove_all_string_from_path_list(new_path, &PATH);
 		break;
 	}
 	default: { /* print all paths */
