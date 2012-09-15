@@ -300,14 +300,20 @@ int run_command(const char *cmd[], int array_size)
 		/* We only get here if an error occurs in executing
 		 * given command */
 		print_error("Unknown command\n");
+		free_pointer_array((void **) params, param_size, 0);
 		/* Kill the child process */
 		exit(EXIT_FAILURE);
 
 	} else { /* pid > 0 :  i.e. parent process */
+		int wait_status;
 		int status;
 		/* wait for child process for finish running */
-		while (wait(&status) != pid)
-			;
+		while ((wait_status = wait(&status)) != -1 &&
+			wait_status != pid);
+		if(wait_status == -1) {
+			print_error("Wait System Call failed");
+			perror(NULL);
+		}
 	}
 	free_pointer_array((void **) params, param_size, 0);
 	return 1;
