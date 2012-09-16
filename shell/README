@@ -9,8 +9,16 @@ Shell is a simple C-based Shell.
 It has support for 4 internal commands.
 * exit : quits the shell
 * cd : changes the current working directory for the shell.
+cd [NEW_PATH]
+It needs an argument. When run with no args produces an error.
+
 * path : lists the internal PATH variable for this shell.
-* history : lists a history of previous commands
+path + [PATH] to add a new path
+path - [PATH] to remove all copies of path
+path to list curent PATHs
+
+* history : lists a history of previous commands.  Note that this command
+does not save the list history command `history` in the history.
 
 It can also execute any external command. To run external commands,
 we use an internal PATH list to keep track of folders to look for
