@@ -8,6 +8,11 @@
 #include <pwd.h>
 #include "shell.h"
 
+/* Determines if user should get feedback after executing
+ * commands. By default this is off.
+ */
+#define OUTPUT_MSG 0
+
 char *BUILTIN_COMMANDS[] = {"cd", "path", "history"};
 
 int test(int argc, char **argv)
@@ -552,7 +557,8 @@ int run_path_cmd(const char *cmd[])
 			return 0;
 		}
 		add_string_to_path_list(new_path, &PATH);
-		printf("Added new path: %s\n", new_path);
+		if(OUTPUT_MSG)
+			printf("Added new path: %s\n", new_path);
 		break;
 	}
 	case '-': { /* remove all copies of path from the list */
@@ -566,7 +572,8 @@ int run_path_cmd(const char *cmd[])
 	}
 	default: { /* print all paths */
 		if (PATH.size == 0) {
-			printf("\nPath list is currently empty\n");
+			if(OUTPUT_MSG)
+				printf("\nPath list is currently empty\n");
 			return 1;
 		}
 		struct String *curr = PATH.head;
@@ -906,7 +913,8 @@ int remove_string_from_path_list(const char *string, struct StringList *list)
 		/* free memory */
 		free(to_delete->data);
 		free(to_delete);
-		printf("Removed %s from PATH\n", string);
+		if(OUTPUT_MSG)
+			printf("Removed %s from PATH\n", string);
 		return 1;
 	}
 
@@ -927,7 +935,8 @@ int remove_string_from_path_list(const char *string, struct StringList *list)
 		print_error("Cannot remove from PATH - Item not found");
 		return 0;
 	} else {
-		printf("Removed %s from PATH\n", string);
+		if(OUTPUT_MSG)
+			printf("Removed %s from PATH\n", string);
 		return 1;
 	}
 }
