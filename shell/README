@@ -43,6 +43,17 @@ you can execute ./test_w4118_sh.
 Furthermore, The shell program was tested by manually running it and executing different
 commands to see if they worked.
 
+I had also ran the given python test script and my shell passed that test as well.
+
+Coding Style
+=============
+The code style used is consistent with that of the linux kernel coding style.
+You can run the checkpatch.pl with the arguments --no-tree -f [FILE_NAME]
+to validate that the style was followed.
+
+Example:
+./checkpatch.pl --no-tree -f shell.c
+
 Resources Referenced:
 =====================
 GNU Libc Documentation at http://www.gnu.org/software/libc/manual/
