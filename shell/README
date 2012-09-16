@@ -12,6 +12,10 @@ It has support for 4 internal commands.
 * path : lists the internal PATH variable for this shell.
 * history : lists a history of previous commands
 
+It can also execute any external command. To run external commands,
+we use an internal PATH list to keep track of folders to look for
+executables. You can modify and add to this list using the internal
+path command. Initially the PATH starts out empty.
 
 How to Compile
 ===============
@@ -21,20 +25,6 @@ make clean && make all
 How to Run
 ==================
 You can run shell by running ./w4118_sh
-
-
-Simple Sample Runs:
-==================
-./w4118_sh
-$ /bin/ls
-checkpatch.pl  main.o		   README	test.c	       w4118_sh
-cs	       Makefile		   shell.c	test.h
-diffpatch.txt  new_test_file	   shell.h	test.h.gch
-hw1_test.py    pexpect-2.3	   shell.h.gch	test.o
-main.c	       pexpect-2.3.tar.gz  shell.o	test_w4118_sh
-
-$ /bin/pwd
-/mnt/hgfs/Programming/C/OS/hmwk1/shell
 
 
 Error Handling
@@ -53,4 +43,177 @@ you can execute ./test_w4118_sh.
 Furthermore, The shell program was tested by manually running it and executing different
 commands to see if they worked.
 
+Resources Referenced:
+=====================
+GNU Libc Documentation at http://www.gnu.org/software/libc/manual/
 
+
+Sample Shell Run:
+=================
+Below is a sample shell run demonstrating the functionality that we had to implement.
+
+./w4118_sh
+
+$ /bin/ls
+checkpatch.pl  main.o		   README	test.c	       w4118_sh
+cs	       Makefile		   shell.c	test.h
+diffpatch.txt  new_test_file	   shell.h	test.h.gch
+hw1_test.py    pexpect-2.3	   shell.h.gch	test.o
+main.c	       pexpect-2.3.tar.gz  shell.o	test_w4118_sh
+$ /bin/pwd
+/mnt/hgfs/Programming/C/OS/hmwk1/shell
+$ ls
+error: Unknown command
+
+$ path + /bin
+Added new path: /bin
+$ ls
+checkpatch.pl  main.o		   README	test.c	       w4118_sh
+cs	       Makefile		   shell.c	test.h
+diffpatch.txt  new_test_file	   shell.h	test.h.gch
+hw1_test.py    pexpect-2.3	   shell.h.gch	test.o
+main.c	       pexpect-2.3.tar.gz  shell.o	test_w4118_sh
+$ path - /bin
+Removed /bin from PATH
+$ ls
+error: Unknown command
+
+$ path + /bin
+Added new path: /bin
+$ path
+/bin
+$ path + /usr/bin
+Added new path: /usr/bin
+$ path
+/usr/bin:/bin
+$ path + /bin
+Added new path: /bin
+$ path
+/bin:/usr/bin:/bin
+$ path + /bin
+Added new path: /bin
+$ path
+/bin:/bin:/usr/bin:/bin
+$ path - /bin
+Removed /bin from PATH
+Removed /bin from PATH
+Removed /bin from PATH
+$ path
+/usr/bin
+$ path + /bin
+Added new path: /bin
+$ history
+[1] /bin/ls
+[2] /bin/pwd
+[3] ls
+[4] path + /bin
+[5] ls
+[6] path - /bin
+[7] ls
+[8] path + /bin
+[9] path
+[10] path + /usr/bin
+[11] path
+[12] path + /bin
+[13] path
+[14] path + /bin
+[15] path
+[16] path - /bin
+[17] path
+[18] path + /bin
+$ !3
+checkpatch.pl  main.o		   README	test.c	       w4118_sh
+cs	       Makefile		   shell.c	test.h
+diffpatch.txt  new_test_file	   shell.h	test.h.gch
+hw1_test.py    pexpect-2.3	   shell.h.gch	test.o
+main.c	       pexpect-2.3.tar.gz  shell.o	test_w4118_sh
+$ history
+[1] /bin/ls
+[2] /bin/pwd
+[3] ls
+[4] path + /bin
+[5] ls
+[6] path - /bin
+[7] ls
+[8] path + /bin
+[9] path
+[10] path + /usr/bin
+[11] path
+[12] path + /bin
+[13] path
+[14] path + /bin
+[15] path
+[16] path - /bin
+[17] path
+[18] path + /bin
+[19] ls
+$ cd
+error: No path specified. Not changing directory
+$ pwd
+/mnt/hgfs/Programming/C/OS/hmwk1/shell
+$ cd /home
+$ pwd
+/home
+$ cd fakefile
+error: Changed directory command failed
+No such file or directory
+$ cd /mnt/hgfs/Programming/C/OS/hmwk1/shell
+$ pwd
+/mnt/hgfs/Programming/C/OS/hmwk1/shell
+$ history
+[1] /bin/ls
+[2] /bin/pwd
+[3] ls
+[4] path + /bin
+[5] ls
+[6] path - /bin
+[7] ls
+[8] path + /bin
+[9] path
+[10] path + /usr/bin
+[11] path
+[12] path + /bin
+[13] path
+[14] path + /bin
+[15] path
+[16] path - /bin
+[17] path
+[18] path + /bin
+[19] ls
+[20] cd
+[21] pwd
+[22] cd /home
+[23] pwd
+[24] cd fakefile
+[25] cd /mnt/hgfs/Programming/C/OS/hmwk1/shell
+[26] pwd
+$ !9
+/bin:/usr/bin
+$ history
+[1] /bin/ls
+[2] /bin/pwd
+[3] ls
+[4] path + /bin
+[5] ls
+[6] path - /bin
+[7] ls
+[8] path + /bin
+[9] path
+[10] path + /usr/bin
+[11] path
+[12] path + /bin
+[13] path
+[14] path + /bin
+[15] path
+[16] path - /bin
+[17] path
+[18] path + /bin
+[19] ls
+[20] cd
+[21] pwd
+[22] cd /home
+[23] pwd
+[24] cd fakefile
+[25] cd /mnt/hgfs/Programming/C/OS/hmwk1/shell
+[26] pwd
+[27] path
