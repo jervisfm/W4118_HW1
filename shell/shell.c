@@ -899,6 +899,7 @@ int remove_string_from_path_list(const char *string, struct StringList *list)
 		/* free memory */
 		free(to_delete->data);
 		free(to_delete);
+		printf("Removed %s from PATH\n", string);
 		return 1;
 	}
 
