@@ -307,7 +307,8 @@ int run_command(const char *cmd[], int array_size)
 		 * because we're going to kill the process and the OS
 		 * can reclaim back the memory anyway.  */
 		free_pointer_array((void **) params, param_size, 0);
-		free(full_path);
+		if (full_path != NULL)
+			free(full_path);
 
 		/* Kill the child process */
 		exit(EXIT_FAILURE);
