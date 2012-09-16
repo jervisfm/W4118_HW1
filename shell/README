@@ -56,6 +56,13 @@ Example:
 
 [1] - You can download checkpath script from: https://github.com/mirrors/linux-2.6/blob/master/scripts/checkpatch.pl
 
+Memory Cleanup
+==============
+I have been vigilant in freeing up no longer un-needed memory that
+was allocated on the heap so as to prevent memory leaks. That said,
+I do not free all reachable heap memory right before I exit because
+I assume that the operating system will handle this for me.
+
 Resources Referenced:
 =====================
 GNU Libc Documentation at http://www.gnu.org/software/libc/manual/
