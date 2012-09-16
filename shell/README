@@ -48,11 +48,13 @@ I had also ran the given python test script and my shell passed that test as wel
 Coding Style
 =============
 The code style used is consistent with that of the linux kernel coding style.
-You can run the checkpatch.pl with the arguments --no-tree -f [FILE_NAME]
+You can run the checkpatch.pl[1] with the arguments --no-tree -f [FILE_NAME]
 to validate that the style was followed.
 
 Example:
 ./checkpatch.pl --no-tree -f shell.c
+
+[1] - You can download checkpath script from: https://github.com/mirrors/linux-2.6/blob/master/scripts/checkpatch.pl
 
 Resources Referenced:
 =====================
