@@ -302,7 +302,13 @@ int run_command(const char *cmd[], int array_size)
 		/* We only get here if an error occurs in executing
 		 * given command */
 		print_error("Unknown command\n");
+		/* Do memory cleanup. Note that this is not all the memory
+		 * that was allocated. But it does not matter in this case
+		 * because we're going to kill the process and the OS
+		 * can reclaim back the memory anyway.  */
 		free_pointer_array((void **) params, param_size, 0);
+		free(full_path);
+
 		/* Kill the child process */
 		exit(EXIT_FAILURE);
 
