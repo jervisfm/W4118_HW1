@@ -1,0 +1,92 @@
+Operating Systems
+Homework 1
+13th September 2012
+
+Question 1.13
+1.13a In a multiprogramming and time-sharing environment, several users share the system simultaneously. This situation can result in various security problems. What are two such problems?
+First, the shared use of the computer systems means that there is a potential for (malicious) users to access other users’ data. Ideally, this situation ought not to happen but the operating system software is a very complex system and it is very likely that there is a vulnerability in the services that the OS provides which would allow unauthorized users to access other users’ data.
+
+
+Another problem that can happen is that a user can potentially launch a denial of service attack on the system.This could happen for example by figuring out a mechanism of circumventing the operating system control and consuming excessive resources (such as disk) and thus preventing all other legitimate users from access the service. Essentially the core of such a denial of service attack is abusing a vulnerability in the operating system that allows a user to do a resource-exhaustion attack. The same goal can also be achieved for example if there is  a bug in the operating system that when exploited causes the operating system to crash or hang.
+
+
+1.13b Can we ensure the same degree of security in a time-shared machine as in a dedicated machine?
+From a  theoretical perspective, I would argue that it is possible to secure both systems similarly (i.e. to the same degree), in protecting from similar attack scenarios. This is because we can think of the users sharing a machine to be equivalent (in a sense) to processes running in a dedicated machine. The users, much like the processes, run under the control of the operating system. They both have privileges and their level of access to resources is controlled by the operating system. Thus, to the degree that it is possible to secure and compartmentalize processes from one another in a dedicated machine, it is also possible to achieve a similar level of separation in a time-shared machine. Hence so long as the system is designed and implemented securely and has absolutely no vulnerabilities, we can guarantee the  same level of security.
+
+
+However, it is important to note also that security, as experience has shown, is extremely difficult to get right in software systems, and this is even more true in a complex piece of software such as operating system. As evidence of this, one only needs to look at the steady stream of monthly software patches that Microsoft releases each month to fix often critical security holes in their various versions of Wi
+ndows OS. Hence, it is the case that despite the theoretical possibility of achieving similar levels of security, this is unlikely to be the case in actual practice. Arguably a time-shared machine operating system is more complex than a dedicated machine operating and this implies that from a pragmatic standpoint, it is likely that the two operating systems do not offer the exact same level of security, everything else being equal.
+
+
+1.24 Some computer systems do not provide a privileged mode of operation in hardware. Is it possible to construct a secure operating system for these computer systems? Give arguments both that is and that is not possible?
+
+
+The main mechanism in which the operating system is able to assert and limit control to hardware resources while servicing user-level programs comes from the ability to classify certain instructions as being privileged and others as being non-privileged. The privileged instructions (often kernel code / system calls) are unbounded by what they can do and thus they can only be executed in privileged mode. Non-privileged instructions on the other hand are necessarily constrained by what they can do and it is this distinction in mode of execution at the hardware level that enables the operating system at the software level to very strictly control and limit what the user-level code is able to do and thus by doing so it is able to secure / restrict access to the resources that it is managing.
+
+
+So ,does this mean then in a system where there is no distinction in the priviledge level of an instruction, that it is not possible to have a secure operating system ? Not necessarily. The same mechanism described above which exists at the hardware level can be emulated in software. The way this would work is that on startup the operating system startups and loads itself. Then say, that it gave the user a prompt to execute any program. The operating system since it is the first software to be running still has complete control and as such it can decide to execute the user-program in any manner it sees fit. To securely execute the user-program (and prevent it from taking over the entire system if the program were malicious for example) it can first scan the entire program (or portions of it) and check to see if the program performs any unauthorized action or perhaps a privileged action other than what is allowed through the system-call interface. If this is the case, i.e. the program is malicious, the operating system can refuse to run it. In essence, we can think of the operating system as attempting to run the program in an entirely separate emulated machine so that it will still always be able to maintain actual control of the real hardware. Obviously, such a system will be inefficient and slow as there is a lot of overhead involved. Furthermore, the complexity of implementing such a system almost certainly means that the operating system is very likely to be less secure in terms of vulnerability likely present in the system everything else being equal. One example of a such a system is the Java Virtual Machine (JVM). Despite decades of development time, every other month or so, there are often security vulnerability found in Java that would allow malicious Java program to break free of the JVM sandbox.
+
+1.30 Define essential properties of the following types of operating systems :
+Batch
+Enables jobs to be queued up in groups and run later on at a different and perhaps more convenient time.
+
+Interactive
+Allows the user to interact with the system in a one-one-one fashion. That is user-provided commands are executed one after another.
+
+TIme Sharing
+Allows multiple users to transparently share the resources of a machine in a manner in which the users are typically unaware of each other and for sufficiently power system the users feel to be the sole users of the system. Time Sharing OS has to manage resources in this context and gives each user a time-slice for their jobs to run. Also key in such a system is security and ensuring that the users only access resource they are authorized to (typically their own data).
+
+Real Time
+Has to ensure that program instructions are processed and executed within very rigid time constraint limits. If this guarantee cannot be met, the system fails. Typically used in robots and sensory equipment.
+
+Network
+Provides easy access to network resources on machines in the local network and also wider public internet. Also allows you to provide a network service to other machines (i.e. make your machine to be a server).
+
+Parallel
+Allows you to run program jobs on different computing nodes.
+
+Distributed
+Enables you to easily and seamlessly take advantage of distributed resources typically connected together through a network to improve reliability and performance of a system. To the user though, it appears as though it is just one system.
+
+Clustered
+Allow you to take advantage of  multiple computers together in solving a problem. Exposes the resources of a cluster of machine as a single more powerful machine.
+
+Handheld
+Design to deal with the limited resources inherent in a handheld device. Has to manage the limited CPU and memory available to ensure that system is responsive and reliable throughout despite limited resources. Good power management is also needed in order to achieve decent battery life.
+
+
+1.31 What are the tradeoffs inherent in handheld computers
+Handheld computers have limited memory (both primary and secondary) and CPU processing available due to their size. One key constraint is that of the battery life versus the speed of the CPU. A faster CPU means that applications on the device can run more quickly. However, this often comes at the cost of short battery life since the more powerful CPU will likely consume more power.
+
+
+Similarly, the handheld device can contain a bigger storage medium such as a small hard drive rather than just flash memory. The problem here is that the hard drive is likely to be heavier and thus it adds to the total weight of the device which makes the device to be less portable.
+
+
+2.10 Why do some systems store the operating system in firmware while others store it on disk?
+The amount of storage possible in firmware (at a given price point) is very limited compared to disk storage. Thus, for complex system it is much easier to load and store the operating system on disk storage medium rather than memory firmware.
+
+
+Also, having the operating system on disk makes it possible to upgrade or alter the operating system easily. This is not possible in firmware if the firmware is read only and not reprogrammable.
+
+
+2.16 What are the advantages and disadvantages of using the same system call interface for manipulating both files and devices?
+The advantage of using the same system call interface for manipulating files and devices is that it provides a consistent interface upon which application programmers can build upon. This level of consistency is good because programmers don't have to learn and use different sets of functions for managing different devices. This is also good for the OS even because to add support for new devices, all that needs to be added is a module (typically a driver) that implements the standard interface for the device. Also note that an inconsistent interface is harder to use correctly and hence it makes it more likely that there will be makes bugs / mistakes in the application code, so this is another benefit.
+
+
+The disadvantage is that the interface may not be equally applicable to both files and devices. For example, you can have a write system call which does not make sense for devices such as a keyboard. This disadvantage such as it is not really too big of a problem because such (invalid) calls can simply return an error code which the programmer can then process and handle appropriately.
+
+
+Another problem related to this is that if you needed to add a new function for interacting with a novel device that was not part of the standard,  then you would have to either add it to be part of the interface or implement it separately. Both of these choices are nonideal. In the former it will force you to implement this function for other devices in which it is not relevant and in the latter you will fail to achieve your goal of having just one single interface for interacting with all system resources (file and devices).
+
+
+
+
+2.23  What is the main advantage for an operating system design of using a virtual machine architecture? What is the main advantage for a user?
+The advantage for an OS is that it is better able to very strictly isolate the execution environment of processes from one another. Each process can be executed in its own separate environment (i.e. virtual machine) without being aware of the other processes in the system and thus being unable to interfere with them. Notice that the benefit of this level of isolation also applies to the host operating system because the running processes are each contained within their respective virtual machines.
+
+
+The main advantage for a user is that this type of architecture is more secure because of the level of isolation between the different environment that it provides. As such the user can be protected from running malicious programs such as a virus because the malware will be restricted to only the virtual machine in which it was running under. Another benefit that arises from this is that virtual machines allow users to concurrently run different types of operating systems which can be very helpful in testing and developing programs including system software.
+
+
+2.24 Why is a just in time compiler useful for executing java programs?
+When a java program is compiled what is produced is bytecode. Running the java program involves interpreting the bytecode into native machine instructions. Repeatedly doing this process introduces a  performance overhead. A Java Just in Time (JIT) compiler is useful for executing java programs because it caches the result of the byte code interpretation so that the next time a similar bytecode instruction is encountered, the corresponding native machine instruction can be immediately executed.
