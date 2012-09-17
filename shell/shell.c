@@ -44,8 +44,8 @@ int run_shell(void)
 		trim_whitespace(user_input);
 		char *parsed[MAX_ARGUMENTS];
 		parse_line(user_input, parsed, MAX_ARGUMENTS);
-		run_command((const char **) parsed, MAX_ARGUMENTS);
 		free(user_input);
+		run_command((const char **) parsed, MAX_ARGUMENTS);
 		free_pointer_array((void **) parsed, MAX_ARGUMENTS, 1);
 	}
 }
