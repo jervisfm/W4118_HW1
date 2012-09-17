@@ -557,7 +557,7 @@ int run_path_cmd(const char *cmd[])
 			return 0;
 		}
 		add_string_to_path_list(new_path, &PATH);
-		if(OUTPUT_MSG)
+		if (OUTPUT_MSG)
 			printf("Added new path: %s\n", new_path);
 		break;
 	}
@@ -572,7 +572,7 @@ int run_path_cmd(const char *cmd[])
 	}
 	case '\0': { /* we just have 'path' so print all paths */
 		if (PATH.size == 0) {
-			if(OUTPUT_MSG)
+			if (OUTPUT_MSG)
 				printf("\nPath list is currently empty\n");
 			return 1;
 		}
@@ -940,7 +940,7 @@ int remove_string_from_path_list(const char *string, struct StringList *list)
 		print_error("Cannot remove from PATH - Item not found");
 		return 0;
 	} else {
-		if(OUTPUT_MSG)
+		if (OUTPUT_MSG)
 			printf("Removed %s from PATH\n", string);
 		return 1;
 	}
