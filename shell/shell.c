@@ -570,7 +570,7 @@ int run_path_cmd(const char *cmd[])
 		remove_all_string_from_path_list(new_path, &PATH);
 		break;
 	}
-	default: { /* print all paths */
+	case '\0': { /* we just have 'path' so print all paths */
 		if (PATH.size == 0) {
 			if(OUTPUT_MSG)
 				printf("\nPath list is currently empty\n");
@@ -584,6 +584,11 @@ int run_path_cmd(const char *cmd[])
 
 		}
 		printf("\n");
+		break;
+	}
+	default: { /* error case */
+		print_error("invalid path command");
+		return 0;
 		break;
 	}
 	}
